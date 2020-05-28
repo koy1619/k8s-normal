@@ -44,6 +44,22 @@ node # sh init.sh  k8s-node-1
 node # sh init.sh  k8s-node-2
 ```
 
+部署顺序
+
+>* 自签TLS证书,创建 metrics-server 证书
+>* 部署Etcd集群,获取K8S二进制包
+>* 创建Node节点kubeconfig文件
+>* 配置Master组件并运行
+>* 配置kubelet证书自动续期和创建Node授权用户
+>* 配置Node组件并运行
+>* 安装calico网络，使用IPIP模式
+>* 集群CoreDNS部署
+>* 部署集群监控服务 Metrics Server
+>* 部署 nginx-ingress
+
+
+******** ps 部分文件内容根据实际情况，须修改对应IP地址 ********
+
 
 # TLS证书
 
