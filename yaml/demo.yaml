@@ -1,0 +1,77 @@
+# ------------------- App Deployment ------------------- #
+apiVersion: apps/v1
+kind: Deployment
+#kind: DaemonSet
+metadata:
+  name: nginx-demo-server
+spec:
+  replicas: 2           #relicas指定容器副本数量，默认为1
+  selector:
+    matchLabels:
+      app: nginx-demo-server
+  template:
+    metadata:
+      labels:
+        app: nginx-demo-server
+    spec:
+      containers:
+        - name: nginx-demo-server
+          image: 'nginxinc/ingress-demo'
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              cpu: "0.5"             #限制pod申请最大的cpu数量为1个cpu
+              memory: 1Gi          #申请内存最大值
+            requests:
+              cpu: "0.2"           #pod申请的cpu数量为0.5个cpu
+              memory: 512Mi        #申请内存的最小值
+---
+# ------------------- App Service ------------------- #
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-demo-service
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/affinity: "true"
+    nginx.ingress.kubernetes.io/session-cookie-name: backend
+#    nginx.ingress.kubernetes.io/load-balancer-method: drr
+
+
+spec:
+  selector:
+    app: nginx-demo-server
+  ports:
+  - name: web
+    port: 80
+    targetPort: 80
+---
+# ------------------- App Ingress ------------------- #
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nginx-demo-web
+  namespace: default
+  annotations:
+    # 代理发送超时
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    # 代理读取超时
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    # 代理连接超时
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    # 基于客户端出口ip哈希
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$http_x_forwarded_for"
+spec:
+  rules:
+  - host: test-nginx-demo.e-buychina.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nginx-demo-service
+          servicePort: web
+
+#  tls:
+#  - secretName: test-nginx-demo.e-buychina.com
+#    hosts:
+#    - test-nginx-demo.e-buychina.com
