@@ -21,8 +21,8 @@
 
 服务版本与K8S集群说明
 
->* 阿里slb设置TCP监听，监听6443端口(通过四层负载到master apiserver)。
->* 所有阿里云ECS主机使用 CentOS 7.6.1810 版本，并且内核都升到5.x版本。
+>* haproxy设置TCP监听，nginx-ingress的svc端口
+>* 所有主机使用 CentOS 7.6.1810 版本，并且内核都升到5.x版本。
 >* K8S 集群使用 Iptables 模式（kube-proxy 注释中预留 Ipvs 模式配置）
 >* Calico 使用 IPIP 模式
 >* 集群使用默认 svc.cluster.local
