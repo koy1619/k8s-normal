@@ -21,18 +21,19 @@
 
 服务版本与K8S集群说明
 
->* haproxy设置TCP监听，nginx-ingress的svc端口
+>* haproxy设置TCP监听nginx-ingress的svc端口
 >* 所有主机使用 CentOS 7.6.1810 版本，并且内核都升到5.x版本。
 >* K8S 集群使用 Iptables 模式（kube-proxy 注释中预留 Ipvs 模式配置）
 >* Calico 使用 IPIP 模式
->* 集群使用默认 svc.cluster.local
+>* 集群域使用默认 svc.cluster.local
 >* 10.10.0.1 为集群 kubernetes svc 解析ip
 >* Docker CE version 19.03.6
 >* Kubernetes Version 1.18.2
 >* Etcd Version v3.4.7
 >* Calico Version v3.14.0
->* Coredns Version 1.6.7
+>* Coredns Version 1.6.5
 >* Metrics-Server Version v0.3.6
+>* nginx-ingress-controller Version 0.24.1
 
 # 初始化
 
