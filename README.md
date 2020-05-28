@@ -61,7 +61,7 @@ node # sh init.sh  k8s-node-2
 
 **********************************************************************
 
-**ps 部分文件内容根据实际情况，须修改对应IP地址**
+**ps 部分文件内容根据实际情况，须修改对应配置项，下文都有说明**
 
 **master如需做高可用集群，则安装多个master节点，使用slb负载apiserver**
 
@@ -71,6 +71,7 @@ node # sh init.sh  k8s-node-2
 # TLS证书
 
 ```
+# 须根据实际情况修改证书里面的IP地址
 master # sh mktls.sh
 ```
 
@@ -79,9 +80,9 @@ master # sh mktls.sh
 ```
 master # sh etcd_install.sh
 
-master # kubernetes_install.sh    # kubernetes_install
+master # kubernetes_install.sh    # kubernetes二进制文件安装
 
-master # sh kubeconfig.sh
+master # sh kubeconfig.sh   # 根据实际情况修改KUBE_APISERVER地址
 
 master # scp -r /k8s/* root@all_node:/k8s/
 
@@ -91,7 +92,7 @@ node # sh etcd_conf.sh etcd02 10.127.0.17 etcd01=https://10.127.0.16:2380,etcd02
 
 node # sh etcd_conf.sh etcd03 10.127.0.18 etcd01=https://10.127.0.16:2380,etcd02=https://10.127.0.17:2380,etcd03=https://10.127.0.18:2380
 
-
+# etcd健康检查
 $ ETCDCTL_API=3 /k8s/etcd/bin/etcdctl  --write-out=table \
 --cacert=/k8s/kubernetes/ssl/ca.pem --cert=/k8s/kubernetes/ssl/server.pem --key=/k8s/kubernetes/ssl/server-key.pem \
 --endpoints=https://10.127.0.16:2379,https://10.127.0.17:2379,https://10.127.0.18:2379 endpoint health
@@ -111,18 +112,14 @@ master # sh scheduler.sh 127.0.0.1
 master # ps -ef | grep kube
 master # netstat -ntpl | grep kube-
 
-#export KUBERNETES_MASTER="127.0.0.1:8080"
-
 kubectl  get cs
 
 
 #配置kubelet证书自动续期和创建Node授权用户
 kubectl create clusterrolebinding  kubelet-bootstrap --clusterrole=system:node-bootstrapper  --user=kubelet-bootstrap
 
-
 #创建自动批准相关 CSR 请求的 ClusterRole
 kubectl apply -f /app/yaml/system/tls-instructs-csr.yaml
-
 
 #自动批准 kubelet-bootstrap 用户 TLS bootstrapping 首次申请证书的 CSR 请求
 kubectl create clusterrolebinding node-client-auto-approve-csr --clusterrole=system:certificates.k8s.io:certificatesigningrequests:nodeclient --user=kubelet-bootstrap
@@ -132,7 +129,6 @@ kubectl create clusterrolebinding node-client-auto-renew-crt --clusterrole=syste
 
 #自动批准 system:nodes 组用户更新 kubelet 10250 api 端口证书的 CSR 请求
 kubectl create clusterrolebinding node-server-auto-renew-crt --clusterrole=system:certificates.k8s.io:certificatesigningrequests:selfnodeserver --group=system:nodes
-
 
 
 #解决无法查询pods日志问题
@@ -158,6 +154,8 @@ node # netstat -ntpl | egrep "kubelet|kube-proxy"
 NAME         STATUS     ROLES    AGE   VERSION
 k8s-node-1   NotReady   <none>   20s   v1.18.2
 
+# calico网络组件安装
+# 需修改 etcd-key etcd-cert etcd-ca etcd_endpoints KUBERNETES_SERVICE_HOST 配置项
 kubectl  create -f calico-etcd.yaml
 
 kubectl  get pods -n kube-system  | grep calico
@@ -167,7 +165,7 @@ kubectl  get pods -n kube-system  | grep calico
 NAME         STATUS   ROLES    AGE     VERSION
 k8s-node-1   Ready    <none>   146m    v1.18.2
 
-
+# metrics-server监控安装
 cd /app/yaml/metrics-server-v0.3.6/
 kubectl  create -f .
 kubectl get pods -n kube-system |grep metrics-server
@@ -175,10 +173,10 @@ kubectl -n kube-system logs -l k8s-app=metrics-server  -f
 kubectl  top node
 kubectl  top pod
 
-
+# coredns安装 可自定义上游域名 修改 hosts 配置项
 kubectl create -f coredns.yaml
 
-
+# master 打污点
 kubectl taint node k8s-master key1=value1:NoSchedule
 ```
 
@@ -188,7 +186,6 @@ kubectl taint node k8s-master key1=value1:NoSchedule
 kubectl  create -f nginx-ingress.yaml
 
 # ssl secret
-
 kubectl create secret tls ebuy-secret --key server.key --cert server.crt
 
 
@@ -196,7 +193,7 @@ kubectl create secret tls ebuy-secret --key server.key --cert server.crt
 # demo 测试
 kubectl  create -f demo.yaml
 
-# 解析域名到任意nodeip
+# 解析域名到任意nodeip访问
 
 
 # 负载均衡
@@ -217,8 +214,6 @@ listen nginx_gress_http
      server k8s_node_1 k8s-node-1-ip:32403 weight 1 check inter 2000 rise 5 fall 10
      server k8s_node_2 k8s-node-2-ip:32403 weight 1 check inter 2000 rise 5 fall 10
 
-
-
 listen nginx_gress_https
      mode tcp
      balance roundrobin
@@ -230,7 +225,7 @@ listen nginx_gress_https
      server k8s_node_2 k8s-node-2-ip:31688 weight 1 check inter 2000 rise 5 fall 10
 
 
-# 解析域名到10.127.0.10
+# 解析域名到10.127.0.10访问
 	 
 kubectl  get nodes,cs,svc,pods  -o wide  --all-namespaces
 ```
