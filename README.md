@@ -1,12 +1,17 @@
+拓扑
 
-服务器信息
+![_20200601133452.jpg](https://wx1.sbimg.cn/2020/06/01/_20200601133452.jpg)
+
+---
+
+服务器规划
 
 | 主机名    | IP   |
 | :-----: | :----:  |
 | k8s-master   |  10.127.0.16     |
-| k8s-node-1	 |  10.127.0.17   |
-| k8s-node-2	 |  10.127.0.18  |
-| slb	 |  10.127.0.10   |
+| k8s-node-1     |  10.127.0.17   |
+| k8s-node-2     |  10.127.0.18  |
+| slb    |  10.127.0.10   |
 
 
 网段划分
@@ -14,19 +19,12 @@
 | 名称    | IP网段   | 备注   |
 | :-----: | :----:  | :----:  |
 | service-cluster-ip   |  10.10.0.0/16     | 可用地址 65534     |
-| pods-ip		 |  10.20.0.0/16   | 可用地址 65534     |
-| 集群dns		 |  10.10.0.2  | 用于集群service域名解析     |
-| k8s svc	 | 10.10.0.1  | 集群 kubernetes svc 解析ip     |
+| pods-ip                |  10.20.0.0/16   | 可用地址 65534     |
+| 集群dns                |  10.10.0.2  | 用于集群service域名解析     |
+| k8s svc        | 10.10.0.1  | 集群 kubernetes svc 解析ip     |
 
 
-服务版本与K8S集群说明
-
->* haproxy设置TCP监听nginx-ingress的svc端口
->* 所有主机使用 CentOS 7.6.1810 版本，并且内核都升到5.x版本。
->* K8S 集群使用 Iptables 模式（kube-proxy 注释中预留 Ipvs 模式配置）
->* Calico 使用 IPIP 模式
->* 集群域使用默认 svc.cluster.local
->* 10.10.0.1 为集群 kubernetes svc 解析ip
+服务版本
 >* Docker CE version 19.03.6
 >* Kubernetes Version 1.18.2
 >* Etcd Version v3.4.7
@@ -34,6 +32,77 @@
 >* Coredns Version 1.6.5
 >* Metrics-Server Version v0.3.6
 >* nginx-ingress-controller Version 0.24.1
+
+---
+
+K8S集群说明
+>* 所有主机使用 CentOS 7.6.1810 版本，并且内核都升到5.x版本。
+>* K8S 集群使用 Iptables 模式（kube-proxy 注释中预留 Ipvs 模式配置）
+>* Calico 使用 IPIP 模式
+>* 集群域使用默认 svc.cluster.local
+>* 10.10.0.1 为集群 kubernetes svc 解析ip
+>* haproxy设置TCP监听nginx-ingress的svc端口
+
+
+部署顺序
+
+>* 一、初始化
+  关闭 firewalld
+  关闭 swap
+  关闭 Selinux
+  修改内核参数
+  预先设置 PATH
+  设置hostname
+  判断内核并升级
+  安装docker
+
+>* 二、证书生成
+  准备cfssl证书生成工具
+  自签TLS证书,metrics-server 证书
+
+>* 三、部署Etcd集群
+  从Github下载二进制文件
+  拷贝master上的ssl证书到node
+  设置kubeconfig
+  依次启动etcd
+  健康检查
+
+>* 四、部署Master Node
+  从Github下载二进制文件; 解压二进制包
+  部署kube-apiserver
+  部署kube-controller-manager
+  部署kube-scheduler
+  配置kubelet证书自动续期和创建Node授权用户
+  批准kubelet证书申请并加入集群
+
+>* 五、部署Worker Node
+  创建工作目录并拷贝二进制文件
+  拷贝master上的ssl证书到node
+  部署kubelet
+  部署kube-proxy
+
+>* 六、组件安装
+  部署CNI网络(calico)
+  部署metrics-server
+  部署CoreDNS
+  部署nginx-ingress(负载均衡)
+
+>* 七、高可用架构(扩容多Master架构)可选
+  部署多个master节点
+  使用slb负载apiserver
+  修改所有Node连接slb-apiserver
+
+
+
+
+
+**********************************************************************
+
+**ps 部分文件内容根据实际情况，须修改对应配置项，下文都有说明**
+
+**master如需做高可用集群，则安装多个master节点，使用slb负载apiserver**
+
+**********************************************************************
 
 # 初始化
 
@@ -44,28 +113,6 @@ node # sh init.sh  k8s-node-1
 
 node # sh init.sh  k8s-node-2
 ```
-
-部署顺序
-
->* 自签TLS证书,创建 metrics-server 证书
->* 部署Etcd集群,获取K8S二进制包
->* 创建Node节点kubeconfig文件
->* 配置Master组件并运行
->* 配置kubelet证书自动续期和创建Node授权用户
->* 配置Node组件并运行
->* 安装calico网络，使用IPIP模式
->* 集群CoreDNS部署
->* 部署集群监控服务 Metrics Server
->* 部署 nginx-ingress
-
-
-**********************************************************************
-
-**ps 部分文件内容根据实际情况，须修改对应配置项，下文都有说明**
-
-**master如需做高可用集群，则安装多个master节点，使用slb负载apiserver**
-
-**********************************************************************
 
 
 # TLS证书
@@ -226,7 +273,7 @@ listen nginx_gress_https
 
 
 # 解析域名到10.127.0.10访问
-	 
+         
 kubectl  get nodes,cs,svc,pods  -o wide  --all-namespaces
 ```
 
