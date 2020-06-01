@@ -1,6 +1,6 @@
 拓扑
 
-![_20200601133452.jpg](https://wx1.sbimg.cn/2020/06/01/_20200601133452.jpg)
+[![_20200601141117.jpg](https://wx2.sbimg.cn/2020/06/01/_20200601141117.jpg)](https://sbimg.cn/image/kGn1l)
 
 ---
 
@@ -47,50 +47,50 @@ K8S集群说明
 部署顺序
 
 >* 一、初始化
-  关闭 firewalld
-  关闭 swap
-  关闭 Selinux
-  修改内核参数
-  预先设置 PATH
-  设置hostname
-  判断内核并升级
-  安装docker
+>** 关闭 firewalld
+>** 关闭 swap
+>** 关闭 Selinux
+>** 修改内核参数
+>** 预先设置 PATH
+>** 设置hostname
+>** 判断内核并升级
+>** 安装docker
 
 >* 二、证书生成
-  准备cfssl证书生成工具
-  自签TLS证书,metrics-server 证书
+>** 准备cfssl证书生成工具
+>** 自签TLS证书,metrics-server 证书
 
 >* 三、部署Etcd集群
-  从Github下载二进制文件
-  拷贝master上的ssl证书到node
-  设置kubeconfig
-  依次启动etcd
-  健康检查
+>** 从Github下载二进制文件
+>** 拷贝master上的ssl证书到node
+>** 设置kubeconfig
+>** 依次启动etcd
+>** 健康检查
 
 >* 四、部署Master Node
-  从Github下载二进制文件; 解压二进制包
-  部署kube-apiserver
-  部署kube-controller-manager
-  部署kube-scheduler
-  配置kubelet证书自动续期和创建Node授权用户
-  批准kubelet证书申请并加入集群
+>** 从Github下载二进制文件; 解压二进制包
+>** 部署kube-apiserver
+>** 部署kube-controller-manager
+>** 部署kube-scheduler
+>** 配置kubelet证书自动续期和创建Node授权用户
+>** 批准kubelet证书申请并加入集群
 
 >* 五、部署Worker Node
-  创建工作目录并拷贝二进制文件
-  拷贝master上的ssl证书到node
-  部署kubelet
-  部署kube-proxy
+>** 创建工作目录并拷贝二进制文件
+>** 拷贝master上的ssl证书到node
+>** 部署kubelet
+>** 部署kube-proxy
 
 >* 六、组件安装
-  部署CNI网络(calico)
-  部署metrics-server
-  部署CoreDNS
-  部署nginx-ingress(负载均衡)
+>** 部署CNI网络(calico)
+>** 部署metrics-server
+>** 部署CoreDNS
+>** 部署nginx-ingress(负载均衡)
 
 >* 七、高可用架构(扩容多Master架构)可选
-  部署多个master节点
-  使用slb负载apiserver
-  修改所有Node连接slb-apiserver
+>** 部署多个master节点
+>** 使用slb负载apiserver
+>** 修改所有Node连接slb-apiserver
 
 
 
@@ -279,4 +279,3 @@ kubectl  get nodes,cs,svc,pods  -o wide  --all-namespaces
 
 #  参考
 https://mp.weixin.qq.com/s/_TxeS1Fiy9XEOEEnF31deA
-
