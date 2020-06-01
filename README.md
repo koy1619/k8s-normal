@@ -1,6 +1,6 @@
 拓扑
 
-![image](https://github.com/koy1619/k8s-v1.18.2-binary-install/blob/master/images/_20200601141117.jpg)
+![image](https://github.com/koy1619/k8s-v1.18.2-binary-install/blob/master/images/_20200601141117.png)
 
 
 ---
