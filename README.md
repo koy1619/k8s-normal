@@ -213,8 +213,7 @@ NAME         STATUS   ROLES    AGE     VERSION
 k8s-node-1   Ready    <none>   146m    v1.18.2
 
 # metrics-server监控安装
-cd /app/yaml/metrics-server-v0.3.6/
-kubectl  create -f .
+kubectl  create -f metrics-server.yaml
 kubectl get pods -n kube-system |grep metrics-server
 kubectl -n kube-system logs -l k8s-app=metrics-server  -f
 kubectl  top node
