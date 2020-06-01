@@ -116,14 +116,14 @@ node # sh init.sh  k8s-node-2
 ```
 
 
-# TLS证书
+# TLS create
 
 ```
 # 须根据实际情况修改证书里面的IP地址
 master # sh mktls.sh
 ```
 
-# etcd_install_config
+# etcd_install
 
 ```
 master # sh etcd_install.sh
@@ -149,7 +149,7 @@ $ ETCDCTL_API=3 /k8s/etcd/bin/etcdctl  --write-out=table \
 
 
 
-# kubernetes_config
+# master_install
 
 ```
 master # sh apiserver.sh 10.127.0.16 https://10.127.0.16:2379,https://10.127.0.17:2379,https://10.127.0.18:2379 
