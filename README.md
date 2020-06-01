@@ -1,6 +1,6 @@
 拓扑
 
-![image](https://wx2.sbimg.cn/2020/06/01/_20200601141117.jpg)
+![image](https://raw.githubusercontent.com/koy1619/k8s-v1.18.2-binary-install/master/images/20200601141117.png)
 
 
 ---
