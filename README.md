@@ -197,9 +197,9 @@ kubectl  create -f demo.yaml
 
 
 # 负载均衡
-[root@k8s-master yaml]# kubectl  get svc -n ingress-nginx
-NAME            TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)                      AGE
-ingress-nginx   LoadBalancer   10.10.188.101   <pending>     80:32403/TCP,443:31688/TCP   11h
+[root@k8s-master ~]# kubectl  get svc -n ingress-nginx
+NAME            TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
+ingress-nginx   NodePort   10.10.32.187   <none>        80:32080/TCP,443:32443/TCP   6m31s
 
 
 # haproxy配置
@@ -211,8 +211,8 @@ listen nginx_gress_http
      timeout client 30s
      timeout server 30s
      timeout connect 30s
-     server k8s_node_1 k8s-node-1-ip:32403 weight 1 check inter 2000 rise 5 fall 10
-     server k8s_node_2 k8s-node-2-ip:32403 weight 1 check inter 2000 rise 5 fall 10
+     server k8s_node_1 k8s-node-1-ip:32080 weight 1 check inter 2000 rise 5 fall 10
+     server k8s_node_2 k8s-node-2-ip:32080 weight 1 check inter 2000 rise 5 fall 10
 
 listen nginx_gress_https
      mode tcp
@@ -221,8 +221,8 @@ listen nginx_gress_https
      timeout client 30s
      timeout server 30s
      timeout connect 30s
-     server k8s_node_1 k8s-node-1-ip:31688 weight 1 check inter 2000 rise 5 fall 10
-     server k8s_node_2 k8s-node-2-ip:31688 weight 1 check inter 2000 rise 5 fall 10
+     server k8s_node_1 k8s-node-1-ip:32443 weight 1 check inter 2000 rise 5 fall 10
+     server k8s_node_2 k8s-node-2-ip:32443 weight 1 check inter 2000 rise 5 fall 10
 
 
 # 解析域名到10.127.0.10访问
