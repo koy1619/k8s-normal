@@ -1,8 +1,7 @@
 拓扑
 
-[![_20200601141117.jpg](https://wx2.sbimg.cn/2020/06/01/_20200601141117.jpg)](https://sbimg.cn/image/kGn1l)
+![image](https://github.com/koy1619/k8s-v1.18.2-binary-install/blob/master/images/_20200601141117.jpg)
 
-<img src="https://wx2.sbimg.cn/2020/06/01/_20200601141117.jpg" alt="_20200601141117.jpg" border="0" />
 
 ---
 
