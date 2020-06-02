@@ -15,7 +15,7 @@ KUBELET_OPTS="--logtostderr=true \\
 --network-plugin=cni \\
 --cni-conf-dir=/etc/cni/net.d \\
 --cni-bin-dir=/opt/cni/bin \\
---pod-infra-container-image=yangpeng2468/google_containers-pause-amd64:3.2"
+--pod-infra-container-image=system386/pause-amd64:3.2"
 EOF
 
 cat <<EOF >/k8s/kubernetes/cfg/kubelet-config.yml
