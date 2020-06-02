@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: nginx-demo-server
-          image: 'nginxinc/ingress-demo'
+          #image: 'nginxinc/ingress-demo'
+          image: 'system386/nginx-ingress-demo'
           imagePullPolicy: IfNotPresent
           resources:
             limits:
