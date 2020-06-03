@@ -76,3 +76,27 @@ spec:
 #  - secretName: test-nginx-demo.e-buychina.com
 #    hosts:
 #    - test-nginx-demo.e-buychina.com
+
+---
+# ------------------- HPA ------------------- #
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-nginx-demo
+  namespace: default
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-demo-server
+  minReplicas: 1
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 85
+  - type: Resource
+    resource:
+      name: memory
+      targetAverageValue: 1024Mi
