@@ -87,16 +87,30 @@ metadata:
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
-    kind: Deployment
-    name: nginx-demo-server
-  minReplicas: 1
-  maxReplicas: 10
+    kind: Deployment    # 基于Deployment进行扩缩
+    name: nginx-demo-server    # Deployment名    
+  minReplicas: 1     # 最小实例数
+  maxReplicas: 10    # 最大实例数
+
   metrics:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: 85
+      targetAverageUtilization: 85    # CPU阈值设定85%
   - type: Resource
     resource:
       name: memory
-      targetAverageValue: 1024Mi
+      targetAverageValue: 1024Mi    # 内存设定1G
+
+  - type: Pods
+    pods:
+      metricName: packets-per-second
+      targetAverageValue: 1k   # 每秒数据量
+  - type: Object
+    object:
+      metricName: requests-per-second
+      target:
+        apiVersion: extensions/v1beta1
+        kind: Ingress
+        name: main-route
+      targetValue: 10k   # 每秒请求量
