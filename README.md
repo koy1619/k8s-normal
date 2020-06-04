@@ -12,7 +12,9 @@
 | k8s-master   |  10.127.0.16     |
 | k8s-node-1     |  10.127.0.17   |
 | k8s-node-2     |  10.127.0.18  |
-| slb    |  10.127.0.10   |
+| nginx-ingress-slb    |  10.127.0.10   |
+| kube-apiserver-slb    |  10.127.0.xx(可选)   |
+
 
 
 网段划分
