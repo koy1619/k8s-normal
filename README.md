@@ -234,7 +234,6 @@ kubectl taint node k8s-master key1=value1:NoSchedule
 # nginx-ingress
 
 ```
-# nginx-ingress前端还有代理,后端获取真实IP,请修改proxy-real-ip-cidr的值为前端代理ip
 kubectl  create -f nginx-ingress.yaml
 
 # ssl secret
