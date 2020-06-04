@@ -44,7 +44,7 @@ spec:
     app: nginx-demo-server
   ports:
   - name: web
-    port: 80
+    port: 443
     targetPort: 80
 ---
 # ------------------- App Ingress ------------------- #
@@ -72,10 +72,10 @@ spec:
           serviceName: nginx-demo-service
           servicePort: web
 
-#  tls:
-#  - secretName: test-nginx-demo.e-buychina.com
-#    hosts:
-#    - test-nginx-demo.e-buychina.com
+  tls:
+  - secretName: ebuy-secret
+    hosts:
+    - test-nginx-demo.e-buychina.com
 
 ---
 # ------------------- HPA ------------------- #
