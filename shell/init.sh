@@ -43,7 +43,18 @@ EOF
 sysctl -p /etc/sysctl.d/k8s.conf
 
 
+#kubectl命令自动补全
+yum -y install bash-completion
+source /usr/share/bash-completion/bash_completion
+source <(kubectl completion bash)
 
+echo 'source /usr/share/bash-completion/bash_completion'>> /etc/bashrc
+echo 'source <(kubectl completion bash)'>> /etc/bashrc
+echo "alias grep='grep --color=auto'">> /etc/bashrc
+echo "PS1='\[\e[37;40m\][\[\e[32;40m\]\u\[\e[37;40m\]@\h \[\e[35;40m\]\W\[\e[0m\]]\$'">> /etc/bashrc
+source /etc/bashrc
+
+#创建K8S安装目录
 mkdir /k8s/etcd/{bin,cfg} -p
 mkdir /k8s/kubernetes/{bin,cfg,ssl} -p
 
