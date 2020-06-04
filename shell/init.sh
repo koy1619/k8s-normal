@@ -45,8 +45,6 @@ sysctl -p /etc/sysctl.d/k8s.conf
 
 #kubectl命令自动补全
 yum -y install bash-completion
-source /usr/share/bash-completion/bash_completion
-source <(kubectl completion bash)
 
 echo 'source /usr/share/bash-completion/bash_completion'>> /etc/bashrc
 echo 'source <(kubectl completion bash)'>> /etc/bashrc
