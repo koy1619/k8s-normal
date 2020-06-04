@@ -159,7 +159,7 @@ master # sh scheduler.sh 127.0.0.1
 # 查看master三个服务是否正常运行
 master # ps -ef | grep kube
 master # netstat -ntpl | grep kube-
-
+export KUBERNETES_MASTER="127.0.0.1:8080"
 kubectl  get cs
 
 
