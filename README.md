@@ -44,7 +44,8 @@ K8S集群说明
 >* Calico 使用 IPIP 模式
 >* 集群域使用默认 svc.cluster.local
 >* 10.10.0.1 为集群 kubernetes svc 解析ip
->* haproxy设置TCP监听nginx-ingress的svc端口
+>* haproxy设置TCP监听nginx-ingress的svc端口,实现ingress高可用
+>* ingress后端获取客户端真实IP
 
 
 部署顺序
@@ -244,7 +245,7 @@ kubectl create secret tls ebuy-secret --key server.key --cert server.crt
 # demo 测试
 kubectl  create -f demo.yaml
 
-# 解析域名到任意nodeip访问
+# 解析域名到任意nodeip访问 (需注释掉nginx-ingress.yaml的use-proxy-protocol配置)
 
 
 # 负载均衡
@@ -254,7 +255,6 @@ ingress-nginx   NodePort   10.10.32.187   <none>        80:32080/TCP,443:32443/T
 
 
 # haproxy配置
-
 listen nginx_gress_http
      mode tcp
      balance roundrobin
