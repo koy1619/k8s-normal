@@ -437,7 +437,7 @@ spec:
         # Used to install CNI.
         - name: cni-bin-dir
           hostPath:
-            path: /opt/cni/bin
+            path: /etc/cni/bin
         - name: cni-net-dir
           hostPath:
             path: /etc/cni/net.d
