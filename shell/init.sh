@@ -16,8 +16,10 @@
 #yum remove -y docker*
 #:> /etc/docker/daemon.json
 
-
-
+#设置hosts
+echo "10.127.0.16 k8s-master" >> /etc/hosts
+echo "10.127.0.17 k8s-node-1" >> /etc/hosts
+echo "10.127.0.18 k8s-node-2" >> /etc/hosts
 
 #关闭firewalld
 systemctl stop firewalld

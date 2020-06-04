@@ -108,6 +108,7 @@ K8S集群说明
 # 初始化
 
 ```bash
+#设置hosts须手动修改
 master # sh init.sh  k8s-master
 
 node # sh init.sh  k8s-node-1
