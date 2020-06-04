@@ -234,6 +234,7 @@ kubectl taint node k8s-master key1=value1:NoSchedule
 # nginx-ingress
 
 ```
+# nginx-ingress前端还有代理,后端获取真实IP,请修改proxy-real-ip-cidr的值为前端代理ip
 kubectl  create -f nginx-ingress.yaml
 
 # ssl secret
@@ -262,8 +263,8 @@ listen nginx_gress_http
      timeout client 30s
      timeout server 30s
      timeout connect 30s
-     server k8s_node_1 k8s-node-1-ip:32080 weight 1 check inter 2000 rise 5 fall 10
-     server k8s_node_2 k8s-node-2-ip:32080 weight 1 check inter 2000 rise 5 fall 10
+     server k8s_node_1 k8s-node-1-ip:32080 weight 1 check inter 2000 rise 5 fall 10 send-proxy
+     server k8s_node_2 k8s-node-2-ip:32080 weight 1 check inter 2000 rise 5 fall 10 send-proxy
 
 listen nginx_gress_https
      mode tcp
@@ -272,8 +273,8 @@ listen nginx_gress_https
      timeout client 30s
      timeout server 30s
      timeout connect 30s
-     server k8s_node_1 k8s-node-1-ip:32443 weight 1 check inter 2000 rise 5 fall 10
-     server k8s_node_2 k8s-node-2-ip:32443 weight 1 check inter 2000 rise 5 fall 10
+     server k8s_node_1 k8s-node-1-ip:32443 weight 1 check inter 2000 rise 5 fall 10 send-proxy
+     server k8s_node_2 k8s-node-2-ip:32443 weight 1 check inter 2000 rise 5 fall 10 send-proxy
 
 
 # 解析域名到10.127.0.10访问

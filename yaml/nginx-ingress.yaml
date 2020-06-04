@@ -51,6 +51,15 @@ data:
   forwarded-for-header: "X-Forwarded-For"
   use-forwarded-headers: "true"
 
+  # nginx-ingress前端还有代理,后端获取真实IP,前端代理务必配置,nginx设置proxy_protocol on,haproxy设置send-proxy
+  # 如果ingress的前端代理不设置，后端会无法访问，报错broken header
+  # 参考文档如下:
+  # https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#use-proxy-protocol
+  # https://chanjarster.github.io/chanjarster.github.io/post/k8s/pass-client-ip-to-backend/
+  # https://blog.csdn.net/weixin_30817749/article/details/99336992
+  proxy-real-ip-cidr: 10.127.0.10
+  use-proxy-protocol: "true"
+
   # 客户端请求头的缓冲区大小 
   client-header-buffer-size: "512k"
   # 设置用于读取大型客户端请求标头的最大值number和size缓冲区
