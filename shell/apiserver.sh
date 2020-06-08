@@ -3,6 +3,12 @@
 MASTER_ADDRESS=${1:-"192.168.0.216"}
 ETCD_SERVERS=${2:-"http://127.0.0.1:2379"}
 
+# 创建 kube-apiserver 日志存放目录
+mkdir -p /var/log/kubernetes
+
+# 创建 kube-apiserver 审计日志文件
+touch /var/log/kubernetes/k8s-audit.log
+
 cat <<EOF >/k8s/kubernetes/cfg/kube-apiserver
 KUBE_APISERVER_OPTS="--logtostderr=false \\
 --v=2 \\
