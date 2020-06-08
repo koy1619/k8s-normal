@@ -1,5 +1,6 @@
-source /etc/profile
-source /etc/bashrc
+#!/usr/bin/env bash
+set -e
+
 cd /k8s/kubernetes/ssl
 
 # 创建 TLS Bootstrapping Token

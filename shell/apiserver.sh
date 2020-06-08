@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 MASTER_ADDRESS=${1:-"192.168.0.216"}
 ETCD_SERVERS=${2:-"http://127.0.0.1:2379"}
@@ -64,5 +65,8 @@ EOF
 
 systemctl daemon-reload
 systemctl enable kube-apiserver
-systemctl restart kube-apiserver
+systemctl start kube-apiserver
 
+sleep 10
+journalctl -u kube-apiserver -n 20 --no-pager
+systemctl status kube-apiserver

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 DNS_SERVER_IP=${1:-"10.10.0.2"}
 HOSTNAME=${2:-"`hostname`"}
@@ -88,5 +89,8 @@ EOF
 
 systemctl daemon-reload
 systemctl enable kubelet
-systemctl restart kubelet
+systemctl start kubelet
 
+sleep 10
+journalctl -u kubelet -n 20 --no-pager
+systemctl status kubelet

@@ -1,5 +1,8 @@
-mkdir /opt/k8s-package
-cd /opt/k8s-package
+#!/bin/bash
+set -e
+
+mkdir /opt/package-k8s
+cd /opt/package-k8s
 #wget https://dl.k8s.io/v1.18.2/kubernetes-client-linux-amd64.tar.gz
 #wget https://dl.k8s.io/v1.18.2/kubernetes-server-linux-amd64.tar.gz
 #wget https://dl.k8s.io/v1.18.2/kubernetes-node-linux-amd64.tar.gz
@@ -13,7 +16,7 @@ wget https://cdm.yp14.cn/k8s-package/kubernetes-server-v1.18.2-linux-amd64.tar.g
 tar zxvf kubernetes-server-v1.18.2-linux-amd64.tar.gz
 
 # 进入解压出来二进制包bin目录
-cd /opt/k8s-package/kubernetes/server/bin
+cd /opt/package-k8s/kubernetes/server/bin
 
 # cpoy 执行文件到 /opt/kubernetes/bin 目录
 cp -a kube-apiserver kube-controller-manager kube-scheduler kubectl kubelet kube-proxy /k8s/kubernetes/bin

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 MASTER_ADDRESS=${1:-"127.0.0.1"}
 
@@ -37,5 +38,8 @@ EOF
 
 systemctl daemon-reload
 systemctl enable kube-controller-manager
-systemctl restart kube-controller-manager
+systemctl start kube-controller-manager
 
+sleep 10
+journalctl -u kube-controller-manager -n 20 --no-pager
+systemctl status kube-controller-manager

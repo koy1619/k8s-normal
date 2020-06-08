@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 ETCD_NAME=${1:-"etcd01"}
 ETCD_IP=${2:-"127.0.0.1"}
 ETCD_CLUSTER=${3:-"etcd01=https://127.0.0.1:2379"}
@@ -56,5 +59,8 @@ EOF
 
 systemctl daemon-reload
 systemctl enable etcd
-systemctl restart etcd
+systemctl start etcd
 
+sleep 10
+journalctl -u etcd -n 20 --no-pager
+systemctl status etcd

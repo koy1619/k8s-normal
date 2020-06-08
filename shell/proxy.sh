@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 HOSTNAME=${1:-"`hostname`"}
 
@@ -43,5 +44,8 @@ EOF
 
 systemctl daemon-reload
 systemctl enable kube-proxy
-systemctl restart kube-proxy
+systemctl start kube-proxy
 
+sleep 10
+journalctl -u kube-proxy -n 20 --no-pager
+systemctl status kube-proxy

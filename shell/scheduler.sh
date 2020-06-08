@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 MASTER_ADDRESS=${1:-"127.0.0.1"}
 
@@ -26,5 +27,8 @@ EOF
 
 systemctl daemon-reload
 systemctl enable kube-scheduler
-systemctl restart kube-scheduler
+systemctl start kube-scheduler
 
+sleep 10
+journalctl -u kube-scheduler -n 20 --no-pager
+systemctl status kube-scheduler

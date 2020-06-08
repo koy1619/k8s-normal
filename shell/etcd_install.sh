@@ -1,3 +1,6 @@
+#!/bin/bash
+set -e
+
 # 创建存储etcd数据目录
 mkdir -p /data/etcd
 

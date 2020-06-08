@@ -119,6 +119,9 @@ function Install_docker(){
     echo '{"registry-mirrors": ["https://4xr1qpsp.mirror.aliyuncs.com"], "log-opts": {"max-size":"500m", "max-file":"3"}}' > /etc/docker/daemon.json
     systemctl daemon-reload
     systemctl start docker
+    sleep 10
+    journalctl -u docker -n 20 --no-pager
+    systemctl status docker
 }
 
 # 初始化顺序
