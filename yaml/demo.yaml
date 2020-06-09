@@ -5,17 +5,17 @@ kind: Deployment
 metadata:
   name: nginx-demo-server
 spec:
-  replicas: 3           #relicas指定容器副本数量，默认为1
+  replicas: 2           #relicas指定容器副本数量，默认为1
 
   ##升级回滚策略
   revisionHistoryLimit: 10  #用来设置保留的历史记录数量，默认为2，设置为0时将不能回滚～～
-  minReadySeconds: 5        #Kubernetes在等待设置的时间后才进行升级
+  minReadySeconds: 5        #滚动升级5s后认为该pod就绪
   strategy:
     # indicate which strategy we want for rolling update
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 30%        #升级过程中最多可以比原先设置多出的POD数量
-      maxUnavailable: 30%  #升级过程中最多有多少个POD处于无法提供服务的状态
+      maxSurge: 1        #滚动升级时会先启动1个pod(可配百分比)
+      maxUnavailable: 1  #滚动升级时允许的最大Unavailable的pod个数(可配百分比)
 
   selector:
     matchLabels:
@@ -25,6 +25,7 @@ spec:
       labels:
         app: nginx-demo-server
     spec:
+      terminationGracePeriodSeconds: 40 #k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒
       containers:
         - name: nginx-demo-server
           #image: 'nginxinc/ingress-demo'
