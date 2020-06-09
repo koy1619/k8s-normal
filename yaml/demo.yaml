@@ -9,7 +9,7 @@ spec:
 
   ##升级回滚策略
   revisionHistoryLimit: 10  #用来设置保留的历史记录数量，默认为2，设置为0时将不能回滚～～
-  minReadySeconds: 5        #滚动升级5s后认为该pod就绪
+  minReadySeconds: 5        #滚动升级5s后认为该pod就绪,相当于控制升级速度
   strategy:
     # indicate which strategy we want for rolling update
     type: RollingUpdate
