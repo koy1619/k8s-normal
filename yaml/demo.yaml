@@ -9,13 +9,13 @@ spec:
 
   ##升级回滚策略
   revisionHistoryLimit: 10  #用来设置保留的历史记录数量，默认为2，设置为0时将不能回滚～～
-  minReadySeconds: 5
+  minReadySeconds: 5        #Kubernetes在等待设置的时间后才进行升级
   strategy:
     # indicate which strategy we want for rolling update
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 30%
-      maxUnavailable: 30%
+      maxSurge: 30%        #升级过程中最多可以比原先设置多出的POD数量
+      maxUnavailable: 30%  #升级过程中最多有多少个POD处于无法提供服务的状态
 
   selector:
     matchLabels:
