@@ -6,6 +6,7 @@ metadata:
   name: nginx-demo-server
 spec:
   replicas: 2           #relicas指定容器副本数量，默认为1
+  revisionHistoryLimit: 10  #用来设置保留的历史记录数量，默认为2，设置为0时将不能回滚～～
   selector:
     matchLabels:
       app: nginx-demo-server
@@ -17,7 +18,7 @@ spec:
       containers:
         - name: nginx-demo-server
           #image: 'nginxinc/ingress-demo'
-          image: 'system386/nginx-ingress-demo'
+          image: 'system386/nginx-ingress-demo:0.3'
           imagePullPolicy: IfNotPresent
           resources:
             limits:
