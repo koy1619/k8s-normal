@@ -238,22 +238,6 @@ spec:
             # Name of the CNI config file to create.
             - name: CNI_CONF_NAME
               value: "10-calico.conflist"
-
-            - name: KUBERNETES_SERVICE_HOST
-              value: "10.127.0.16"
-            - name: KUBERNETES_SERVICE_PORT
-              value: "6443"
-            - name: KUBERNETES_SERVICE_PORT_HTTPS
-              value: "6443"
-
-
-            # 定义ipv4自动发现网卡规则
-            - name: IP_AUTODETECTION_METHOD
-              value: "interface=ens.*,eth.*"
-            # 定义ipv6自动发现网卡规则
-            - name: IP6_AUTODETECTION_METHOD
-              value: "interface=ens.*,eth.*"
-
             # The CNI network config to install on each node.
             - name: CNI_NETWORK_CONFIG
               valueFrom:
@@ -300,6 +284,21 @@ spec:
         - name: calico-node
           image: calico/node:v3.14.0
           env:
+
+            - name: KUBERNETES_SERVICE_HOST
+              value: "10.127.0.16"
+            - name: KUBERNETES_SERVICE_PORT
+              value: "6443"
+            - name: KUBERNETES_SERVICE_PORT_HTTPS
+              value: "6443"
+
+            # 定义ipv4自动发现网卡规则
+            - name: IP_AUTODETECTION_METHOD
+              value: "interface=ens.*,eth.*"
+            # 定义ipv6自动发现网卡规则
+            - name: IP6_AUTODETECTION_METHOD
+              value: "interface=ens.*,eth.*"
+
             # The location of the etcd cluster.
             - name: ETCD_ENDPOINTS
               valueFrom:
