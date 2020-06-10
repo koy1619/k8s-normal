@@ -222,6 +222,9 @@ kubectl  get pods -n kube-system  | grep calico
 NAME         STATUS   ROLES    AGE     VERSION
 k8s-node-1   Ready    <none>   146m    v1.18.2
 
+# master 打污点
+kubectl taint node k8s-master key1=value1:NoSchedule
+
 # metrics-server监控安装
 kubectl  create -f metrics-server.yaml
 kubectl get pods -n kube-system |grep metrics-server
@@ -231,9 +234,6 @@ kubectl  top pod
 
 # coredns安装 可自定义上游域名 修改 hosts 配置项
 kubectl create -f coredns.yaml
-
-# master 打污点
-kubectl taint node k8s-master key1=value1:NoSchedule
 ```
 
 # nginx-ingress
