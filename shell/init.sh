@@ -40,7 +40,13 @@ function System_config(){
     #关闭firewalld
     systemctl stop firewalld
     systemctl disable firewalld
-    
+
+    #清空iptables    
+    iptables -F
+    iptables -X
+    iptables -Z
+    iptables -L -n
+
     #关闭 swap
     swapoff -a 
     sed -i 's/.*swap.*/#&/' /etc/fstab
