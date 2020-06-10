@@ -40,7 +40,7 @@
 
 K8S集群说明
 >* 所有主机使用 CentOS 7.6.1810 版本，并且内核都升到5.x版本。
->* K8S 集群使用 Iptables 模式（kube-proxy 注释中预留 Ipvs 模式配置）
+>* kube-proxy 使用 ipvs 模式
 >* Calico 使用 IPIP 模式
 >* 集群域使用默认 svc.cluster.local
 >* 10.10.0.1 为集群 kubernetes svc 解析ip
