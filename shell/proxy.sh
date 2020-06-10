@@ -25,7 +25,7 @@ mode: ipvs # ipvs 模式
 ipvs:
   scheduler: "rr"
 iptables:
-  masqueradeAll: true
+  masqueradeAll: false
 EOF
 
 cat <<EOF >/usr/lib/systemd/system/kube-proxy.service
