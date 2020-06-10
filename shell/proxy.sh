@@ -18,14 +18,14 @@ clientConnection:
   kubeconfig: /k8s/kubernetes/cfg/kube-proxy.kubeconfig # 读取配置文件
 hostnameOverride: ${HOSTNAME} # 注册到k8s的节点名称唯一
 clusterCIDR: 10.10.0.0/16 # service IP范围
-mode: iptables # 使用iptables模式
+#mode: iptables # 使用iptables模式
 
 # 使用 ipvs 模式
-#mode: ipvs # ipvs 模式
-#ipvs:
-#  scheduler: "rr"
-#iptables:
-#  masqueradeAll: true
+mode: ipvs # ipvs 模式
+ipvs:
+  scheduler: "rr"
+iptables:
+  masqueradeAll: true
 EOF
 
 cat <<EOF >/usr/lib/systemd/system/kube-proxy.service

@@ -1,67 +1,5 @@
 #!/usr/bin/env bash
 
-#卸载
-#systemctl stop docker
-#systemctl stop etcd
-#systemctl stop kube-apiserver
-#systemctl stop kubelet
-#systemctl stop kube-proxy
-#systemctl stop flanneld
-#systemctl stop kube-controller-manager
-#systemctl stop kube-scheduler.service
-
-#rm -rf /root/.kube/
-#rm -rf /k8s/*
-
-#yum remove -y docker*
-#:> /etc/docker/daemon.json
-
-#设置hosts
-echo "10.127.0.16 k8s-master" >> /etc/hosts
-echo "10.127.0.17 k8s-node-1" >> /etc/hosts
-echo "10.127.0.18 k8s-node-2" >> /etc/hosts
-
-#关闭firewalld
-systemctl stop firewalld
-systemctl disable firewalld
-
-#关闭 swap
-swapoff -a 
-sed -i 's/.*swap.*/#&/' /etc/fstab
-
-#关闭 Selinux
-setenforce  0 
-sed -i "s/^SELINUX=enforcing/SELINUX=disabled/g" /etc/sysconfig/selinux 
-sed -i "s/^SELINUX=enforcing/SELINUX=disabled/g" /etc/selinux/config 
-sed -i "s/^SELINUX=permissive/SELINUX=disabled/g" /etc/sysconfig/selinux 
-sed -i "s/^SELINUX=permissive/SELINUX=disabled/g" /etc/selinux/config 
-
-#修改内核参数
-cat <<EOF >  /etc/sysctl.d/k8s.conf
-net.bridge.bridge-nf-call-ip6tables = 1
-net.bridge.bridge-nf-call-iptables = 1
-net.ipv4.ip_forward = 1
-EOF
-sysctl -p /etc/sysctl.d/k8s.conf
-
-
-#kubectl命令自动补全
-yum -y install bash-completion
-
-echo 'source /usr/share/bash-completion/bash_completion'>> /etc/bashrc
-echo 'source <(kubectl completion bash)'>> /etc/bashrc
-echo "alias grep='grep --color=auto'">> /etc/bashrc
-echo "PS1='\[\e[37;40m\][\[\e[32;40m\]\u\[\e[37;40m\]@\h \[\e[35;40m\]\W\[\e[0m\]]\$'">> /etc/bashrc
-source /etc/bashrc
-
-#创建K8S安装目录
-mkdir /k8s/etcd/{bin,cfg} -p
-mkdir /k8s/kubernetes/{bin,cfg,ssl} -p
-
-# 预先把 /k8s/kubernetes/bin 目录加入到 PATH
-echo 'export PATH=$PATH:/k8s/kubernetes/bin' >> /etc/profile
-source /etc/profile
-
 
 function Check_linux_system(){
     linux_version=`cat /etc/redhat-release`
@@ -92,6 +30,66 @@ function Set_hostname(){
       exit 1
     fi
 }
+
+function System_config(){
+    #设置hosts
+    echo "10.127.0.16 k8s-master" >> /etc/hosts
+    echo "10.127.0.17 k8s-node-1" >> /etc/hosts
+    echo "10.127.0.18 k8s-node-2" >> /etc/hosts
+    
+    #关闭firewalld
+    systemctl stop firewalld
+    systemctl disable firewalld
+    
+    #关闭 swap
+    swapoff -a 
+    sed -i 's/.*swap.*/#&/' /etc/fstab
+    
+    #关闭 Selinux
+    setenforce  0 
+    sed -i "s/^SELINUX=enforcing/SELINUX=disabled/g" /etc/sysconfig/selinux 
+    sed -i "s/^SELINUX=enforcing/SELINUX=disabled/g" /etc/selinux/config 
+    sed -i "s/^SELINUX=permissive/SELINUX=disabled/g" /etc/sysconfig/selinux 
+    sed -i "s/^SELINUX=permissive/SELINUX=disabled/g" /etc/selinux/config 
+    
+    #修改内核参数
+cat <<EOF >  /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+EOF
+    sysctl -p /etc/sysctl.d/k8s.conf
+
+    # 开启ipvs支持
+    yum -y install ipvsadm  ipset
+# 永久生效
+cat > /etc/sysconfig/modules/ipvs.modules <<EOF
+modprobe -- ip_vs
+modprobe -- ip_vs_rr
+modprobe -- ip_vs_wrr
+modprobe -- ip_vs_sh
+modprobe -- nf_conntrack_ipv4
+EOF
+    sysctl -p
+    
+    #kubectl命令自动补全
+    yum -y install bash-completion
+    
+    echo 'source /usr/share/bash-completion/bash_completion'>> /etc/bashrc
+    echo 'source <(kubectl completion bash)'>> /etc/bashrc
+    echo "alias grep='grep --color=auto'">> /etc/bashrc
+    echo "PS1='\[\e[37;40m\][\[\e[32;40m\]\u\[\e[37;40m\]@\h \[\e[35;40m\]\W\[\e[0m\]]\$'">> /etc/bashrc
+    source /etc/bashrc
+    
+    #创建K8S安装目录
+    mkdir /k8s/etcd/{bin,cfg} -p
+    mkdir /k8s/kubernetes/{bin,cfg,ssl} -p
+    
+    # 预先把 /k8s/kubernetes/bin 目录加入到 PATH
+    echo 'export PATH=$PATH:/k8s/kubernetes/bin' >> /etc/profile
+    source /etc/profile
+}
+
 
 function Install_depend_environment(){
     rpm -qa | grep nfs-utils &> /dev/null && echo -e "\033[32;32m 已完成依赖环境安装，退出依赖环境安装步骤 \033[0m \n" && return
@@ -125,9 +123,9 @@ function Install_docker(){
 }
 
 # 初始化顺序
-HostName=$1
-Check_linux_system && \
+Check_linux_system
+HostName=$1 && \
+System_config && \
 Set_hostname && \
 Install_depend_environment && \
 Install_docker
-
