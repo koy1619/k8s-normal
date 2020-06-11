@@ -77,6 +77,7 @@ modprobe -- ip_vs_sh
 modprobe -- nf_conntrack_ipv4
 EOF
     sysctl -p
+    lsmod |grep ip_vs
     
     #kubectl命令自动补全
     yum -y install bash-completion
