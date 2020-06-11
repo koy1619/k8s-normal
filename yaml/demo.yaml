@@ -56,13 +56,7 @@ spec:
             tcpSocket:
               port: 80
             timeoutSeconds: 1
-          # 优雅退出 只针对 kind: Pod
-      #    lifecycle:
-       #     preStop:
-        #      exec:
-         #       command:
-          #      - sleep
-           #     - 30
+      # 优雅退出
       terminationGracePeriodSeconds: 40 #k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒
 
 
