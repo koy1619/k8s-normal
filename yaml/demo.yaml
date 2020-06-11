@@ -119,7 +119,7 @@ spec:
 
 ---
 # ------------------- HPA ------------------- #
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: hpa-nginx-demo
@@ -136,21 +136,9 @@ spec:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: 85    # CPU阈值设定85%
+      targetAverageUtilization: 80  ##注意此时是根据使用率，也可以根据使用量：targetAverageValue
   - type: Resource
     resource:
       name: memory
-      targetAverageValue: 1024Mi    # 内存设定1G
-
-  - type: Pods
-    pods:
-      metricName: packets-per-second
-      targetAverageValue: 1k   # 每秒数据量
-  - type: Object
-    object:
-      metricName: requests-per-second
-      target:
-        apiVersion: extensions/v1beta1
-        kind: Ingress
-        name: main-route
-      targetValue: 10k   # 每秒请求量
+      #targetAverageValue: 1024Mi    # 内存设定1G
+      targetAverageUtilization: 85  ##注意此时是根据使用率，也可以根据使用量：targetAverageValue
