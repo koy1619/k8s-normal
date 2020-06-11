@@ -136,9 +136,8 @@ spec:
   - type: Resource
     resource:
       name: cpu
-      targetAverageUtilization: 80  ##注意此时是根据使用率，也可以根据使用量：targetAverageValue
+      targetAverageUtilization: 85
   - type: Resource
     resource:
       name: memory
-      #targetAverageValue: 1024Mi    # 内存设定1G
-      targetAverageUtilization: 85  ##注意此时是根据使用率，也可以根据使用量：targetAverageValue
+      targetAverageValue: 1024Mi
