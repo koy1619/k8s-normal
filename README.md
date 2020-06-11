@@ -167,6 +167,15 @@ master # sh scheduler.sh 127.0.0.1
 # 查看master三个服务是否正常运行
 master # ps -ef | grep kube
 master # netstat -ntpl | grep kube-
+
+        PS:
+
+        **`kubectl 1.18` 为了安全考虑，默认不提供 `~/.kube/config`**
+
+        **如需要 `~/.kube/config` 须降级 `kubectl 1.17` 生成**
+
+        所以此处使用 `export KUBERNETES_MASTER='127.0.0.1:8080'`在master连接集群api
+
 master # echo "export KUBERNETES_MASTER='127.0.0.1:8080'">> /etc/profile
 master # source /etc/profile
 master # kubectl  get cs
