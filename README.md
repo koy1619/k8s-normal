@@ -9,6 +9,13 @@
 
 **2core 2G 50G**
 
+操作系统：
+
+```
+$cat /etc/redhat-release 
+CentOS Linux release 7.6.1810 (Core) 
+```
+
 服务器规划
 
 | 主机名    | IP   |
@@ -136,7 +143,7 @@ master # sh mktls.sh
 ```
 master # sh etcd_install.sh
 
-master # kubernetes_install.sh    # kubernetes二进制文件安装
+master # sh kubernetes_install.sh    # kubernetes二进制文件安装
 
 master # sh kubeconfig.sh   # 根据实际情况修改KUBE_APISERVER地址
 
@@ -182,7 +189,7 @@ master # kubectl  get cs
 kubectl create clusterrolebinding  kubelet-bootstrap --clusterrole=system:node-bootstrapper  --user=kubelet-bootstrap
 
 #创建自动批准相关 CSR 请求的 ClusterRole
-kubectl apply -f /app/yaml/system/tls-instructs-csr.yaml
+kubectl apply -f tls-instructs-csr.yaml
 
 #自动批准 kubelet-bootstrap 用户 TLS bootstrapping 首次申请证书的 CSR 请求
 kubectl create clusterrolebinding node-client-auto-approve-csr --clusterrole=system:certificates.k8s.io:certificatesigningrequests:nodeclient --user=kubelet-bootstrap
