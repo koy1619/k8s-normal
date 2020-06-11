@@ -25,7 +25,6 @@ spec:
       labels:
         app: nginx-demo-server
     spec:
-      terminationGracePeriodSeconds: 40 #k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒
       containers:
         - name: nginx-demo-server
           #image: 'nginxinc/ingress-demo'
@@ -38,6 +37,35 @@ spec:
             requests:
               cpu: "0.2"           #pod申请的cpu数量为0.5个cpu
               memory: 512Mi        #申请内存的最小值
+
+          # 存活检测
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1 
+            tcpSocket:
+              port: 80
+            timeoutSeconds: 1
+          # 就绪检测
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 80
+            timeoutSeconds: 1
+          # 优雅退出 只针对 kind: Pod
+      #    lifecycle:
+       #     preStop:
+        #      exec:
+         #       command:
+          #      - sleep
+           #     - 30
+      terminationGracePeriodSeconds: 40 #k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒
+
+
 ---
 # ------------------- App Service ------------------- #
 apiVersion: v1
