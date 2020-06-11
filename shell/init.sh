@@ -32,6 +32,29 @@ function Set_hostname(){
 }
 
 function System_config(){
+
+    #时间同步设置
+    timedatectl set-timezone Asia/Shanghai
+    ntpdate ntp.aliyun.com
+    timedatectl status
+    yum install chrony -y
+cat > /etc/chrony.conf <<EOF
+server ntp.aliyun.com iburst
+server ntp6.aliyun.com iburst
+server cn.ntp.org.cn iburst
+server ntp.shu.edu.cn iburst
+
+driftfile /var/lib/chrony/drift
+makestep 1.0 3
+rtcsync
+logdir /var/log/chrony
+EOF
+    systemctl restart chronyd
+    systemctl enable chronyd
+    systemctl status chronyd
+    chronyc sources -v
+    chronyc sourcestats -v
+
     #设置hosts
     echo "10.127.0.16 k8s-master" >> /etc/hosts
     echo "10.127.0.17 k8s-node-1" >> /etc/hosts
@@ -86,7 +109,6 @@ EOF
     echo 'source <(kubectl completion bash)'>> /etc/bashrc
     echo "alias grep='grep --color=auto'">> /etc/bashrc
     echo "PS1='\[\e[37;40m\][\[\e[32;40m\]\u\[\e[37;40m\]@\h \[\e[35;40m\]\W\[\e[0m\]]\$'">> /etc/bashrc
-    source /etc/bashrc
     
     #创建K8S安装目录
     mkdir /k8s/etcd/{bin,cfg} -p
@@ -95,6 +117,7 @@ EOF
     # 预先把 /k8s/kubernetes/bin 目录加入到 PATH
     echo 'export PATH=$PATH:/k8s/kubernetes/bin' >> /etc/profile
     source /etc/profile
+    source /etc/bashrc
 }
 
 
