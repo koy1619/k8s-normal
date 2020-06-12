@@ -51,12 +51,13 @@ CentOS Linux release 7.6.1810 (Core)
 
 K8S集群说明
 >* 所有主机使用 CentOS 7.6.1810 版本，并且内核都升到5.x版本。
->* kube-proxy 使用 ipvs 模式
+>* kube-proxy 使用 ipvs 模式(预留iptables模式)
 >* Calico 使用 IPIP 模式
 >* 集群域使用默认 svc.cluster.local
 >* 10.10.0.1 为集群 kubernetes svc 解析ip
 >* haproxy设置TCP监听nginx-ingress的svc端口,实现ingress高可用
->* ingress后端获取客户端真实IP
+>* nginx-ingress后端获取客户端真实IP
+>* (可选) traefik-ingress 暂支持80，443和后端获取客户端真实IP功能配置太繁琐，不推荐
 
 
 部署顺序
