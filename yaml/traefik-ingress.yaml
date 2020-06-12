@@ -117,3 +117,7 @@ spec:
       name: websecure
       port: 443
       nodePort: 32443
+
+# traefik 后台
+# http://node-ip:32808
+
