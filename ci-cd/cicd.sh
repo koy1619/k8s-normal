@@ -6,6 +6,8 @@ APP_NAME="paas-app"
 log_addr="172.16.0.12:60005"
 docker_registry="registry-vpc.cn-shanghai.aliyuncs.com/app"
 
+
+git clone git@github.com:paas/$APP_NAME
 cd  ./$APP_NAME
 sed -i "s/server-addr: paas-nacos-config:8848/server-addr: nacos-0.nacos-headless.default.svc.ebuy-k8s.local:8848,nacos-1.nacos-headless.default.svc.ebuy-k8s.local:8848,nacos-2.nacos-headless.default.svc.ebuy-k8s.local:8848/g" core/src/main/resources/application.yml
 sed -i "s/level value=\"debug\"/level value=\"info\"/g" core/src/main/resources/logback-spring.xml
@@ -58,10 +60,6 @@ EOF
 ############################################
 
 #打包上传docker私服
-#docker build -t $APP_NAME .
-#docker tag $APP_NAME $docker_registry/$APP_NAME
-#docker push $docker_registry/$APP_NAME
-
 VERSION=v$(date +%Y%m%d%H%M%S)
 docker build -t $APP_NAME .
 docker tag $APP_NAME $docker_registry/$APP_NAME:$VERSION
@@ -75,12 +73,8 @@ kubectl get pods |grep ${APP_NAME}
 
 ##滚动更新(┬＿┬)s
 
-kubectl set image deployment nginx-demo-server nginx-demo-server=system386/nginx-ingress-demo:0.3 --record
-
-kubectl set image deployment nginx-demo-server nginx-demo-server=system386/nginx-ingress-demo:0.2 --record
-
-kubectl set image deployment nginx-demo-server nginx-demo-server=system386/nginx-ingress-demo:0.1 --record
-
-kubectl rollout history deployment nginx-demo-server
-
-watch -n 1 -d  'kubectl describe deployments.apps  nginx-demo-server'
+#kubectl set image deployment nginx-demo-server nginx-demo-server=system386/nginx-ingress-demo:0.3 --record
+#kubectl set image deployment nginx-demo-server nginx-demo-server=system386/nginx-ingress-demo:0.2 --record
+#kubectl set image deployment nginx-demo-server nginx-demo-server=system386/nginx-ingress-demo:0.1 --record
+#kubectl rollout history deployment nginx-demo-server
+#watch -n 1 -d  'kubectl describe deployments.apps  nginx-demo-server'
