@@ -363,17 +363,12 @@ spec:
 
 
 # kubectl create -f dashboard.yaml 
-
-# 上传证书
-# [root@k8s-master ~]$cd $HOME/certs
-# [root@k8s-master certs]$ls
-# server.crt  server.key
     
 # 创建 kubernetes-dashboard-certs secret
 # kubectl create secret generic kubernetes-dashboard-certs --from-file=$HOME/certs -n kubernetes-dashboard
 
 # 创建 域名 Ingress nginx https 证书
-# kubectl create secret tls k8s-dashboard --key server.key --cert server.crt -n kubernetes-dashboard
+# kubectl create secret tls k8s-dashboard --key $HOME/certs/server.key --cert $HOME/certs/server.crt -n kubernetes-dashboard
 
 # get_token
 # kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user | awk '{print $1}')

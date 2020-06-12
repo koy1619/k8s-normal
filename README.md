@@ -46,6 +46,7 @@ CentOS Linux release 7.6.1810 (Core)
 >* Coredns Version 1.6.5
 >* Metrics-Server Version v0.3.6
 >* nginx-ingress-controller Version 0.24.1
+>* kubernetes-dashboard Version v2.0.0
 
 ---
 
@@ -101,7 +102,8 @@ K8S集群说明
 >* 部署CNI网络(calico)
 >* 部署metrics-server
 >* 部署CoreDNS
->* 部署nginx-ingress(负载均衡)
+>* 部署nginx-ingress(负载均衡) 可选traefik
+>* 部署kubernetes-dashboard
 
 >* 七、高可用架构(扩容多Master架构)可选
 >* 部署多个master节点
@@ -248,7 +250,15 @@ kubectl  top pod
 
 # coredns安装 可自定义上游域名 修改 hosts 配置项
 kubectl create -f coredns.yaml
+
+# kubernetes-dashboard
+kubectl create secret generic kubernetes-dashboard-certs --from-file=$HOME/certs -n kubernetes-dashboard
+kubectl create secret tls k8s-dashboard --key $HOME/certs/server.key --cert $HOME/certs/server.crt -n kubernetes-dashboard
+kubectl create -f dashboard.yaml
 ```
+
+
+
 
 # nginx-ingress
 
@@ -257,7 +267,6 @@ kubectl  create -f nginx-ingress.yaml
 
 # ssl secret
 kubectl create secret tls ebuy-secret --key server.key --cert server.crt
-
 
 
 # demo 测试
