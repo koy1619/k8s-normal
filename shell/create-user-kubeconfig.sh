@@ -138,7 +138,9 @@ $kubectl_17 create clusterrolebinding ${USER}-binding --clusterrole=${Authorizat
 #sh create-user-kubeconfig.sh https://10.127.0.16:6443 admin cluster-admin
 
 
-kubectl describe secrets -n default `kubectl  get secrets -n default | grep admin-token | awk '{print $1}'` | grep 'token:'  >> $USER_SSL_PATH/${USER}.kubeconfig
+kubectl describe secrets -n default `kubectl  get secrets -n default | grep admin-token | awk '{print $1}'` | grep 'token:' > admin-token
+sed -i "1s/^/    /"   admin-token
+cat admin-token >>  $USER_SSL_PATH/${USER}.kubeconfig
 
 
 echo "Congratulations!"
