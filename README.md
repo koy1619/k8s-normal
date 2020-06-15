@@ -248,7 +248,7 @@ kubectl -n kube-system logs -l k8s-app=metrics-server  -f
 kubectl  top node
 kubectl  top pod
 
-# coredns安装 可自定义上游域名 修改 hosts 配置项
+# coredns安装 可自定义域名解析 修改configmap hosts 配置项
 kubectl create -f coredns.yaml
 
 # kubernetes-dashboard
