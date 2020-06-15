@@ -191,7 +191,7 @@ master # source /etc/profile
 master # kubectl  get cs
 
 
-#配置kubelet证书自动续期和创建Node授权用户
+#创建Node授权用户
 kubectl create clusterrolebinding  kubelet-bootstrap --clusterrole=system:node-bootstrapper  --user=kubelet-bootstrap
 
 #创建自动批准相关 CSR 请求的 ClusterRole
