@@ -181,10 +181,12 @@ master # netstat -ntpl | grep kube-
 ##PS:
 ##kubectl 1.18 为了安全考虑，默认不提供 ~/.kube/config
 ##如需要 ~/.kube/config 须降级 kubectl 1.17 生成
-##所以此处使用 export KUBERNETES_MASTER='127.0.0.1:8080' 在master本机连接集群api
+sh create-user-kubeconfig.sh https://10.127.0.16:6443 admin cluster-admin
 
+##也可以使用 export KUBERNETES_MASTER='127.0.0.1:8080' 在master本机连接集群api(不推荐)
 master # echo "export KUBERNETES_MASTER='127.0.0.1:8080'">> /etc/profile
 master # source /etc/profile
+
 master # kubectl  get cs
 
 
