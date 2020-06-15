@@ -140,7 +140,7 @@ $kubectl_17 create clusterrolebinding ${USER}-binding --clusterrole=${Authorizat
 
 kubectl describe secrets -n default `kubectl  get secrets -n default | grep admin-token | awk '{print $1}'` | grep 'token:' > admin-token
 sed -i "1s/^/    /"   admin-token
-sed -i "s/token:      / token: /g" admin-token
+sed -i "s/token:      /token: /g"
 cat admin-token >>  $USER_SSL_PATH/${USER}.kubeconfig
 
 
