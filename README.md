@@ -181,6 +181,7 @@ master # netstat -ntpl | grep kube-
 ##PS:
 ##kubectl 1.18 为了安全考虑，默认不提供 ~/.kube/config
 ##如需要 ~/.kube/config 须降级 kubectl 1.17 生成
+##使用 ~/.kube/config 可远程管理K8S集群(此文件需非常保密)
 sh create-user-kubeconfig.sh https://10.127.0.16:6443 admin cluster-admin
 
 ##也可以使用 export KUBERNETES_MASTER='127.0.0.1:8080' 在master本机连接集群api(不推荐)
