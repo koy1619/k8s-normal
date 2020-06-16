@@ -58,8 +58,8 @@ spec:
             timeoutSeconds: 1
 
       # 优雅退出
-      # 由于应用处理请求最长耗时 40 秒，为了让其在关闭前能够处理完已到达服务端的请求，样例设置了 60 秒的优雅关闭时间
-      terminationGracePeriodSeconds: 60 #k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒
+      # 由于应用处理请求最长耗时40秒,为了让其在关闭前能够处理完已到达服务端的请求,设置60秒的优雅关闭时间
+      terminationGracePeriodSeconds: 60 #k8s将会给应用发送SIGTERM信号,可以用来正确、优雅地关闭应用,默认为30秒
 
 
 ---
