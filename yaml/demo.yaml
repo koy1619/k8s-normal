@@ -9,7 +9,7 @@ spec:
 
   ##升级回滚策略
   revisionHistoryLimit: 10  #用来设置保留的历史记录数量，默认为2，设置为0时将不能回滚～～
-  minReadySeconds: 5        #滚动升级5s后认为该pod就绪,相当于控制升级速度(生产须设置至少90秒)
+  minReadySeconds: 5        #滚动升级5s后认为该pod就绪,相当于控制升级速度(生产须设置至少90秒,这样能保证处于就绪状态的pod能经历一个完整的活性探测周期)
   strategy:
     # indicate which strategy we want for rolling update
     type: RollingUpdate
@@ -56,8 +56,10 @@ spec:
             tcpSocket:
               port: 80
             timeoutSeconds: 1
+
       # 优雅退出
-      terminationGracePeriodSeconds: 40 #k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒
+      # 由于应用处理请求最长耗时 40 秒，为了让其在关闭前能够处理完已到达服务端的请求，样例设置了 60 秒的优雅关闭时间
+      terminationGracePeriodSeconds: 60 #k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒
 
 
 ---
