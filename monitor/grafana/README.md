@@ -27,9 +27,10 @@ URL https://kubernetes
 --Access Server(default)
 --Selected TLS Client Auth
 
-
+```
 --kubelet-client-certificate=/k8s/kubernetes/ssl/server.pem
 --kubelet-client-key=/k8s/kubernetes/ssl/server-key.pem
+```
 
 save
 

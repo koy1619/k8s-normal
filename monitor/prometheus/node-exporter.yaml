@@ -7,7 +7,6 @@ metadata:
   labels:
     k8s-app: node-exporter
 spec:
-  replicas: 1
   selector:
     matchLabels:
       k8s-app: node-exporter
