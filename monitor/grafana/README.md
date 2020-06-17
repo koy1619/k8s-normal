@@ -31,7 +31,7 @@ add kubernetes-cluster
 
 Prometheus Read   Datasource Prometheus
 
-URL https://kubernetes
+URL https://10.127.0.16:6443
 
 --Access Server(default)
 --Selected TLS Client Auth

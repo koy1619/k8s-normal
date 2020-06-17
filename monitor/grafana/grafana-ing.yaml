@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
    name: grafana
-   namespace: default
+   namespace: kube-system
 spec:
    rules:
    - host: k8s.grafana

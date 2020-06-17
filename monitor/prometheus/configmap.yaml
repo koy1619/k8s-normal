@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus-config
-  namespace: lens-metrics
+  namespace: kube-system
 data:
   prometheus.yml: |
     global:

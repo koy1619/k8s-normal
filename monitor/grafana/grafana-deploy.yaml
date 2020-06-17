@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: grafana-core
-  namespace: default
+  namespace: kube-system
   labels:
     app: grafana
     component: core

@@ -5,7 +5,7 @@ metadata:
   labels:
     name: prometheus-deployment
   name: prometheus
-  namespace: lens-metrics
+  namespace: kube-system
 spec:
   replicas: 1
   selector:
