@@ -14,6 +14,9 @@ kubectl exec  -it grafana-core-6bf7b7b878-c9mtt -n lens-metrics /bin/sh
 grafana-cli plugins install grafana-kubernetes-app
 
 kubectl delete  pods grafana-655d56d554-8clxn lens-metrics
+
+kubectl delete -f grafana-svc.yaml
+kubectl create -f grafana-svc.yaml
 ```
 
 login grafana dashboard
@@ -22,7 +25,7 @@ enable plugins kubernetes
 
 add datasource
 
-URL http://prometheus
+URL http://prometheus:9090
 
 add kubernetes-cluster 
 
