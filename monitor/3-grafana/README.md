@@ -1,5 +1,3 @@
-add kubernetes plugins
-
 ```
 
 kubectl create -f  grafana-pvc.yaml
@@ -8,7 +6,7 @@ kubectl create -f  grafana-deploy.yaml
 kubectl create -f  grafana-ing.yaml
 kubectl create -f  grafana-svc.yaml
 
-
+# add kubernetes plugins
 kubectl exec  -it grafana-core-6bf7b7b878-c9mtt -n monitor-metrics /bin/sh
 
 grafana-cli plugins install grafana-kubernetes-app

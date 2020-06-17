@@ -1,17 +1,15 @@
----
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
-  labels:
-    app: prometheus
   name: prometheus
   namespace: monitor-metrics
+  annotations:
+    prometheus.io/scrape: 'true'
 spec:
   type: NodePort
+  selector:
+    name: prometheus
   ports:
   - port: 9090
     targetPort: 9090
     nodePort: 30003
-  selector:
-    app: prometheus
-
