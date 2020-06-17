@@ -1,40 +1,3 @@
-# ------------------- App Deployment ------------------- #
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: nfs-client-provisioner
-spec:
-  replicas: 1
-  strategy:
-    type: Recreate
-  selector:
-    matchLabels:
-      app: nfs-client-provisioner
-  template:
-    metadata:
-      labels:
-        app: nfs-client-provisioner
-    spec:
-      serviceAccountName: nfs-client-provisioner      
-      containers:
-        - name: nfs-client-provisioner
-          image: quay.io/external_storage/nfs-client-provisioner:latest
-          volumeMounts:
-            - name: nfs-client-root
-              mountPath: /persistentvolumes
-          env:
-            - name: PROVISIONER_NAME
-              value: fuseim.pri/ifs
-            - name: NFS_SERVER
-              value: 10.127.0.16
-            - name: NFS_PATH
-              value: /data/nfs_data
-      volumes:
-        - name: nfs-client-root
-          nfs:
-            server: 10.127.0.16
-            path: /data/nfs_data
----
 # ------------------- App RBAC ------------------- #
 apiVersion: v1
 kind: ServiceAccount
@@ -76,6 +39,43 @@ roleRef:
   kind: ClusterRole
   name: nfs-client-provisioner-runner
   apiGroup: rbac.authorization.k8s.io
+---
+# ------------------- App Deployment ------------------- #
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nfs-client-provisioner
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nfs-client-provisioner
+  template:
+    metadata:
+      labels:
+        app: nfs-client-provisioner
+    spec:
+      serviceAccountName: nfs-client-provisioner      
+      containers:
+        - name: nfs-client-provisioner
+          image: quay.io/external_storage/nfs-client-provisioner:latest
+          volumeMounts:
+            - name: nfs-client-root
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME
+              value: fuseim.pri/ifs
+            - name: NFS_SERVER
+              value: 10.127.0.16
+            - name: NFS_PATH
+              value: /data/nfs_data
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: 10.127.0.16
+            path: /data/nfs_data
 ---
 # ------------------- App StorageClass ------------------- #
 apiVersion: storage.k8s.io/v1
