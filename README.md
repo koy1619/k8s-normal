@@ -312,5 +312,16 @@ listen nginx_gress_https
 kubectl  get nodes,cs,svc,pods  -o wide  --all-namespaces
 ```
 
-#  参考
-https://mp.weixin.qq.com/s/_TxeS1Fiy9XEOEEnF31deA
+
+至此 安装结束！！！
+
+
+# 更新记录
+
+2020.05.28 create k8s-v1.18.2-binary-install
+
+2020.06.12 add ci-cd
+
+2020.06.18 add helm
+
+2020.06.18 add monitor
