@@ -1,7 +1,13 @@
 add kubernetes plugins
 
 ```
-kubectl create -f ./
+
+kubectl create -f  grafana-pvc.yaml
+
+kubectl create -f  grafana-deploy.yaml
+kubectl create -f  grafana-ing.yaml
+kubectl create -f  grafana-svc.yaml
+
 
 kubectl exec  -it grafana-core-6bf7b7b878-c9mtt -n lens-metrics /bin/sh
 
