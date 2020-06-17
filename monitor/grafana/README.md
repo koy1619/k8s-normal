@@ -9,11 +9,11 @@ kubectl create -f  grafana-ing.yaml
 kubectl create -f  grafana-svc.yaml
 
 
-kubectl exec  -it grafana-core-6bf7b7b878-c9mtt -n lens-metrics /bin/sh
+kubectl exec  -it grafana-core-6bf7b7b878-c9mtt -n monitor-metrics /bin/sh
 
 grafana-cli plugins install grafana-kubernetes-app
 
-kubectl delete  pods grafana-655d56d554-8clxn lens-metrics
+kubectl delete  pods grafana-655d56d554-8clxn -n monitor-metrics
 
 kubectl delete -f grafana-svc.yaml
 kubectl create -f grafana-svc.yaml
