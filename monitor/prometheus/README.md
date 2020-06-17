@@ -1,4 +1,4 @@
-kubectl create ns lens-metrics
+kubectl create ns monitor-metrics
 
 kubectl create -f  prometheus-pvc.yaml
 

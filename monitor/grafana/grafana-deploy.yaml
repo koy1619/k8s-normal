@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: grafana-core
-  namespace: kube-system
+  namespace: monitor-metrics
   labels:
     app: grafana
     component: core

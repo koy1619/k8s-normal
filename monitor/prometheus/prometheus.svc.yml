@@ -5,7 +5,7 @@ metadata:
   labels:
     app: prometheus
   name: prometheus
-  namespace: kube-system
+  namespace: monitor-metrics
 spec:
   type: NodePort
   ports:
