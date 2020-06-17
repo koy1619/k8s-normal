@@ -1,6 +1,6 @@
 kubectl create ns monitor-metrics
 
-kubectl create -f  prometheus-pvc.yaml
+kubectl create -f  prometheus.pvc.yaml
 
 kubectl create -f  configmap.yaml
 kubectl create -f  node-exporter.yaml
