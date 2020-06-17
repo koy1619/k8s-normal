@@ -59,6 +59,7 @@ K8S集群说明
 >* haproxy设置TCP监听nginx-ingress的svc端口,实现ingress高可用
 >* nginx-ingress后端获取客户端真实IP
 >* (可选) traefik-ingress 暂支持80，443和后端获取客户端真实IP功能配置太繁琐，不推荐
+>* 所有docker镜像不用魔法
 
 
 部署顺序
