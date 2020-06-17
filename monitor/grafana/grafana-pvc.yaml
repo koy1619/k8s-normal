@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pvc
+  namespace: lens-metrics
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: course-nfs-storage
+  resources:
+    requests:
+      storage: 10Gi
+
