@@ -1,3 +1,5 @@
+add kubernetes plugins
+
 ```
 kubectl create -f ./
 
