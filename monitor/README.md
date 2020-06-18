@@ -49,7 +49,7 @@ enable plugins kubernetes
 
 add datasource
 
-URL http://prometheus:9090
+URL http://prometheus:9090 or http://prometheus.monitor-metrics.svc:9090
 
 add kubernetes-cluster
 
@@ -57,7 +57,7 @@ Prometheus Read   Datasource Prometheus
 
 **Name kubernetes**
 
-URL https://10.127.0.16:6443  or  https://10.10.0.1
+URL https://10.127.0.16:6443  or  https://10.10.0.1 or https://kubernetes.default.svc
 
 --Access Server(default)
 --Selected TLS Client Auth
