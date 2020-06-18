@@ -49,14 +49,7 @@ spec:
           # timeoutSeconds: 1
         volumeMounts:
         - name: grafana-persistent-storage
-          mountPath: /var/lib/grafana/plugins
-
-#      volumes:
-#      - name: grafana-persistent-storage
-#        emptyDir: {}
-#        hostPath:
-#          path: /k8s/nfs_data/grafana/plugins
-#          type: DirectoryOrCreate
+          mountPath: /var/lib/grafana
 
 
       volumes:
