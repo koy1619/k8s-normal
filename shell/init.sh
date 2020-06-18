@@ -161,3 +161,7 @@ System_config && \
 Set_hostname && \
 Install_depend_environment && \
 Install_docker
+
+
+# 重启
+reboot
