@@ -3,7 +3,7 @@ yum -y install nfs-utils rpcbind nfs-common
 mkdir -p /data/nfs_data
 chmod 755 /data/nfs_data
 
-cat > /etc/chrony.conf <<EOF
+cat > /etc/exports <<EOF
 /data/nfs_data  *(rw,sync,no_root_squash)
 EOF
 
