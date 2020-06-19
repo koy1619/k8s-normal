@@ -16,6 +16,10 @@ systemctl start rpcbind.service
 systemctl start nfs.service
 
 kubectl create -f 1-nfs-storageclass/
+
+kubectl get sc
+
+kubectl patch storageclass course-nfs-storage -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
 
 # install prometheus+node-exporter+kube-state-metrics
