@@ -19,7 +19,14 @@ kubectl create -f 1-nfs-storageclass/
 
 kubectl get sc
 
+# config default storageclass
 kubectl patch storageclass course-nfs-storage -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+```
+
+# all node install nfs-*
+
+```
+yum -y install nfs-utils rpcbind nfs-common
 ```
 
 # install prometheus+node-exporter+kube-state-metrics
