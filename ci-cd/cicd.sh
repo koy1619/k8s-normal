@@ -65,16 +65,11 @@ docker build -t $APP_NAME .
 docker tag $APP_NAME $docker_registry/$APP_NAME:$VERSION
 docker push $docker_registry/$APP_NAME:$VERSION
 
-##部署(┬＿┬)s
-
-kubectl create -f ${APP_NAME}.yaml  --record
-sleep 10
-kubectl get pods |grep ${APP_NAME}
 
 ##滚动更新(┬＿┬)s
-
-#kubectl set image deployment nginx-demo-server nginx-demo-server=system386/nginx-ingress-demo:0.3 --record
-#kubectl set image deployment nginx-demo-server nginx-demo-server=system386/nginx-ingress-demo:0.2 --record
-#kubectl set image deployment nginx-demo-server nginx-demo-server=system386/nginx-ingress-demo:0.1 --record
-#kubectl rollout history deployment nginx-demo-server
-#watch -n 1 -d  'kubectl describe deployments.apps  nginx-demo-server'
+deployment=$(kubectl get deployment |grep $APP_NAME)
+if [ ! $deployment ];then
+    kubectl apply -f  http://paas-k8s-yaml.paas-demo.com/prod/$APP_NAME.yaml --record
+else
+    kubectl set image deployment $APP_NAME $APP_NAME=$docker_registry/$APP_NAME:$VERSION --record
+fi
