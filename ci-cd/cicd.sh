@@ -68,7 +68,7 @@ docker push $docker_registry/$APP_NAME:$VERSION
 
 ##滚动更新(┬＿┬)s
 deployment=$(kubectl get deployment |grep $APP_NAME)
-if [ ! $deployment ];then
+if [ ! "$deployment" ];then
     kubectl apply -f  http://paas-k8s-yaml.paas-demo.com/prod/$APP_NAME.yaml --record
 else
     kubectl set image deployment $APP_NAME $APP_NAME=$docker_registry/$APP_NAME:$VERSION --record
