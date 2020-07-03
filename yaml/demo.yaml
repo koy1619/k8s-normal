@@ -5,7 +5,7 @@ kind: Deployment
 metadata:
   name: nginx-demo-server
 spec:
-  replicas: 2           #relicas指定容器副本数量，默认为1
+  replicas: 1           #relicas指定容器副本数量，默认为1
 
   ##升级回滚策略
   revisionHistoryLimit: 10  #用来设置保留的历史记录数量，默认为2，设置为0时将不能回滚～～
@@ -15,7 +15,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1        #滚动升级时会先启动1个pod(可配百分比)
-      maxUnavailable: 1  #滚动升级时允许的最大Unavailable的pod个数(可配百分比)
+      maxUnavailable: 0  #滚动升级时允许的最大Unavailable的pod个数(可配百分比)
 
   selector:
     matchLabels:
@@ -125,7 +125,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment    # 基于Deployment进行扩缩
     name: nginx-demo-server    # Deployment名    
-  minReplicas: 2     # 最小实例数
+  minReplicas: 1     # 最小实例数
   maxReplicas: 10    # 最大实例数
 
   metrics:
