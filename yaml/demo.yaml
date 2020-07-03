@@ -15,7 +15,7 @@ spec:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 1        #滚动升级时会先启动1个pod(可配百分比)
-      maxUnavailable: 0  #滚动升级时允许的最大Unavailable的pod个数(可配百分比)
+      maxUnavailable: 0  #滚动升级时允许的最大Unavailable的pod个数(可配百分比)  当副本为1时须配置为0
 
   selector:
     matchLabels:
