@@ -80,7 +80,7 @@ spec:
     app: nginx-demo-server
   ports:
   - name: web
-    port: 443
+    port: 80
     targetPort: 80
 ---
 # ------------------- App Ingress ------------------- #
