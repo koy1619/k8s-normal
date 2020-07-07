@@ -223,6 +223,10 @@ spec:
             - --api.insecure
             - --entrypoints.web.address=:80
             - --entrypoints.websecure.Address=:443
+            - --entrypoints.web.forwardedheaders.insecure
+            - --entrypoints.websecure.forwardedheaders.insecure
+            - --entryPoints.web.proxyProtocol.insecure
+            - --entryPoints.websecure.proxyProtocol.insecure
             - --entryPoints.websecure.http.tls=true
             - --providers.kubernetesIngress=true
           ports:
@@ -263,4 +267,3 @@ spec:
 
 # traefik 后台
 # http://node-ip:32808
-
