@@ -222,6 +222,8 @@ spec:
             - --api
             - --api.insecure
             - --entrypoints.web.address=:80
+            - --entrypoints.web.http.redirections.entryPoint.to=websecure
+            - --entrypoints.web.http.redirections.entryPoint.scheme=https
             - --entrypoints.websecure.Address=:443
             - --entrypoints.web.forwardedheaders.insecure
             - --entrypoints.websecure.forwardedheaders.insecure
@@ -229,6 +231,9 @@ spec:
             - --entryPoints.websecure.proxyProtocol.insecure
             - --entryPoints.websecure.http.tls=true
             - --providers.kubernetesIngress=true
+
+# https://docs.traefik.io/routing/entrypoints
+# https://docs.traefik.io/migration/v2/#expose-an-ingress-on-80-and-443
           ports:
             - name: web
               containerPort: 80
