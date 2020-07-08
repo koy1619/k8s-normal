@@ -325,3 +325,5 @@ kubectl  get nodes,cs,svc,pods  -o wide  --all-namespaces
 2020.06.18 add helm
 
 2020.06.18 add monitor
+
+2020.07.08 update traefik
