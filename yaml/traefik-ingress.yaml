@@ -217,6 +217,7 @@ spec:
             requests:
               cpu: 30m
               memory: 50Mi
+
           args:
             - --log.level=DEBUG
             - --api
@@ -231,9 +232,11 @@ spec:
             - --entryPoints.websecure.proxyProtocol.insecure
             - --entryPoints.websecure.http.tls=true
             - --providers.kubernetesIngress=true
-
+# boot cli refer
+# https://docs.traefik.io/reference/static-configuration/cli/
 # https://docs.traefik.io/routing/entrypoints
 # https://docs.traefik.io/migration/v2/#expose-an-ingress-on-80-and-443
+
           ports:
             - name: web
               containerPort: 80
