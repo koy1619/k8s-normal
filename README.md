@@ -256,9 +256,9 @@ kubectl  top pod
 kubectl create -f coredns.yaml
 
 # kubernetes-dashboard
+kubectl create -f dashboard.yaml
 kubectl create secret generic kubernetes-dashboard-certs --from-file=$HOME/certs -n kubernetes-dashboard
 kubectl create secret tls k8s-dashboard --key $HOME/certs/server.key --cert $HOME/certs/server.crt -n kubernetes-dashboard
-kubectl create -f dashboard.yaml
 ```
 
 
