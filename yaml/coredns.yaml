@@ -72,13 +72,6 @@ data:
             10.127.0.16 registry
             10.127.0.16 paas-nacos-register
             10.127.0.16 paas-nacos-config
-            10.127.1.199 gitlab.e-buychina.com.cn
-            10.127.0.10 dev-paas-gateway.e-buychina.com
-            10.127.0.10 whaletest.e-buychina.com.cn
-            10.127.0.71 dwhapi.e-buychina.com.cn
-            10.10.54.32 dev-paas-nacos.e-buychina.com.cn
-            10.127.0.16 dev-paas-nacos-register.e-buychina.com.cn
-            10.127.0.16 dev-paas-nacos-config.e-buychina.com.cn
             fallthrough
         }
         prometheus :9153
