@@ -116,8 +116,6 @@ EOF
     
     # 预先把 /k8s/kubernetes/bin 目录加入到 PATH
     echo 'export PATH=$PATH:/k8s/kubernetes/bin' >> /etc/profile
-    source /etc/profile
-    source /etc/bashrc
 }
 
 
@@ -164,4 +162,4 @@ Install_docker
 
 
 # 重启
-reboot
+# reboot

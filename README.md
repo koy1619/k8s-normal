@@ -134,6 +134,7 @@ node # sh init.sh  k8s-node-1
 node # sh init.sh  k8s-node-2
 ```
 
+# reboot
 
 # TLS create
 
