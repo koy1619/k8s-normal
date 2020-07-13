@@ -274,12 +274,6 @@ kubectl  create -f nginx-ingress.yaml
 kubectl create secret tls ebuy-secret --key server.key --cert server.crt
 
 
-# demo 测试
-kubectl  create -f demo.yaml
-
-# 解析域名到任意nodeip访问 (需注释掉nginx-ingress.yaml的use-proxy-protocol配置)
-
-
 # 负载均衡
 [root@k8s-master ~]# kubectl  get svc -n ingress-nginx
 NAME            TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
@@ -308,7 +302,11 @@ listen nginx_gress_https
      server k8s_node_2 k8s-node-2-ip:32443 weight 1 check inter 2000 rise 5 fall 10 send-proxy
 
 
-# 解析域名到10.127.0.10访问
+# demo 测试
+
+kubectl  create -f demo.yaml
+
+解析域名到10.127.0.10访问
          
 kubectl  get nodes,cs,svc,pods  -o wide  --all-namespaces
 ```
