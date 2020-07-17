@@ -76,6 +76,8 @@ data:
   # ssl 协议
   #ssl-protocols: "TLSv1 TLSv1.1 TLSv1.2 TLSv1.3 SSLv2 SSLv3"
   ssl-protocols: "TLSv1.2 TLSv1.3"
+  # http重定向https
+  ssl-redirect: 'true'
   # 日志格式
   log-format-upstream: '[$the_real_ip] - $remote_user [$time_local] "$request" $status $body_bytes_sent $request_time "$http_referer" $host DIRECT/$upstream_addr $upstream_http_content_type "$http_user_agent" "$http_x_forwarded_for" $request_length [$proxy_upstream_name] $upstream_response_length $upstream_response_time $upstream_status $req_id'
 
