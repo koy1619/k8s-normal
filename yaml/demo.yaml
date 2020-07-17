@@ -107,11 +107,8 @@ spec:
         backend:
           serviceName: nginx-demo-service
           servicePort: web
-
   tls:
-  - secretName: ebuy-secret
-    hosts:
-    - test-nginx-demo.e-buychina.com
+    - secretName: ebuy-secret
 
 ---
 # ------------------- HPA ------------------- #
