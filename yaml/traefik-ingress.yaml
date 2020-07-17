@@ -218,6 +218,13 @@ spec:
               cpu: 30m
               memory: 50Mi
 
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - NET_BIND_SERVICE
+
           args:
             - --log.level=DEBUG
             - --api
