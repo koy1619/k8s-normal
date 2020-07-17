@@ -184,6 +184,71 @@ subjects:
     name: traefik-ingress-controller
     namespace: kube-system
 
+---
+#################### traefik-ConfigMap ####################
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: traefik-config
+  namespace: kube-system
+data:
+  traefik.yaml: |-
+    ping: ""                    ## 启用 Ping
+    serversTransport:
+      insecureSkipVerify: true  ## Traefik 忽略验证代理服务的 TLS 证书
+    api:
+      insecure: true            ## 允许 HTTP 方式访问 API
+      dashboard: true           ## 启用 Dashboard
+      debug: false              ## 启用 Debug 调试模式
+    metrics:
+      prometheus: ""            ## 配置 Prometheus 监控指标数据，并使用默认配置
+    entryPoints:
+      web:
+        address: ":80"          ## 配置 80 端口，并设置入口名称为 web
+        forwardedHeaders:       ## 配置 信任转发的标头信息
+          insecure: true
+        proxyProtocol:          ## 如果为入口点启用了代理协议标头解析，则此入口点可以接受具有或不具有代理协议标头的连接
+          insecure: true
+        http:                   ## 配置 80 强制跳转443
+          redirections:
+            entryPoint:
+              to: websecure
+              scheme: https
+
+      websecure:
+        address: ":443"         ## 配置 443 端口，并设置入口名称为 websecure
+        http:                   ## 开启tls
+          tls: {}
+        forwardedHeaders:       ## 配置 信任转发的标头信息
+          insecure: true
+        proxyProtocol:          ## 如果为入口点启用了代理协议标头解析，则此入口点可以接受具有或不具有代理协议标头的连接
+          insecure: true
+
+    providers:
+      kubernetesCRD: ""         ## 启用 Kubernetes CRD 方式来配置路由规则
+      kubernetesIngress: ""     ## 启动 Kubernetes Ingress 方式来配置路由规则
+    log:
+      filePath: ""              ## 设置调试日志文件存储路径，如果为空则输出到控制台
+      level: error              ## 设置调试日志级别
+      format: json              ## 设置调试日志格式
+    accessLog:
+      filePath: ""              ## 设置访问日志文件存储路径，如果为空则输出到控制台
+      format: json              ## 设置访问调试日志格式
+      bufferingSize: 0          ## 设置访问日志缓存行数
+      filters:
+        #statusCodes: ["200"]   ## 设置只保留指定状态码范围内的访问日志
+        retryAttempts: true     ## 设置代理访问重试失败时，保留访问日志
+        minDuration: 20         ## 设置保留请求时间超过指定持续时间的访问日志
+      fields:                   ## 设置访问日志中的字段是否保留（keep 保留、drop 不保留）
+        defaultMode: keep       ## 设置默认保留访问日志字段
+        names:                  ## 针对访问日志特别字段特别配置保留模式
+          ClientUsername: drop  
+        headers:                ## 设置 Header 中字段是否保留
+          defaultMode: keep     ## 设置默认保留 Header 中字段
+          names:                ## 针对 Header 中特别字段特别配置保留模式
+            User-Agent: redact
+            Authorization: drop
+            Content-Type: keep
 
 #################### traefik-DaemonSet ####################
 
@@ -217,40 +282,42 @@ spec:
             requests:
               cpu: 30m
               memory: 50Mi
-
-          securityContext:
-            capabilities:
-              drop:
-                - ALL
-              add:
-                - NET_BIND_SERVICE
-
           args:
-            - --log.level=DEBUG
-            - --api
-            - --api.insecure
-            - --entrypoints.web.address=:80
-            - --entrypoints.web.http.redirections.entryPoint.to=websecure
-            - --entrypoints.web.http.redirections.entryPoint.scheme=https
-            - --entrypoints.websecure.Address=:443
-            - --entrypoints.web.forwardedheaders.insecure
-            - --entrypoints.websecure.forwardedheaders.insecure
-            - --entryPoints.web.proxyProtocol.insecure
-            - --entryPoints.websecure.proxyProtocol.insecure
-            - --entryPoints.websecure.http.tls=true
-            - --providers.kubernetesIngress=true
+            - --configfile=/config/traefik.yaml
+          volumeMounts:
+            - mountPath: "/config"
+              name: "config"
+      volumes:
+        - name: config
+          configMap:
+            name: traefik-config 
+
+
+
+#            - --log.level=DEBUG
+#            - --api
+#            - --api.insecure
+#            - --entrypoints.web.address=:80
+#            - --entrypoints.web.http.redirections.entryPoint.to=websecure
+#            - --entrypoints.web.http.redirections.entryPoint.scheme=https
+#            - --entrypoints.websecure.Address=:443
+#            - --entrypoints.web.forwardedheaders.insecure
+#            - --entrypoints.websecure.forwardedheaders.insecure
+#            - --entryPoints.web.proxyProtocol.insecure
+#            - --entryPoints.websecure.proxyProtocol.insecure
+#            - --entryPoints.websecure.http.tls=true
+#            - --providers.kubernetesIngress=true
 # boot cli refer
 # https://docs.traefik.io/reference/static-configuration/cli/
 # https://docs.traefik.io/routing/entrypoints
 # https://docs.traefik.io/migration/v2/#expose-an-ingress-on-80-and-443
-
-          ports:
-            - name: web
-              containerPort: 80
-            - name: websecure
-              containerPort: 443
-            - name: admin
-              containerPort: 8080
+#          ports:
+#            - name: web
+#              containerPort: 80
+#            - name: websecure
+#              containerPort: 443
+#            - name: admin
+#              containerPort: 8080
 
 #################### traefik-Service ####################
 
