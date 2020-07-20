@@ -3,6 +3,8 @@ set -e
 
 mkdir /opt/package-k8s
 cd /opt/package-k8s
+
+#dl.k8s.io
 #wget https://dl.k8s.io/v1.18.2/kubernetes-client-linux-amd64.tar.gz
 #wget https://dl.k8s.io/v1.18.2/kubernetes-server-linux-amd64.tar.gz
 #wget https://dl.k8s.io/v1.18.2/kubernetes-node-linux-amd64.tar.gz
