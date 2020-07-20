@@ -1,10 +1,11 @@
 #!/bin/bash
 set -e
 
-wget https://cdm.yp14.cn/k8s-package/k8s-1.17-bin/kubectl -O /opt/kubectl-1.7
-chmod +x /opt/kubectl-1.7
+#wget https://mirror.azure.cn/kubernetes/kubectl/v1.17.2/bin/linux/amd64/kubectl -O /opt/kubectl-1.17
+wget https://cdm.yp14.cn/k8s-package/k8s-1.17-bin/kubectl -O /opt/kubectl-1.17
+chmod +x /opt/kubectl-1.17
 
-kubectl_17=/opt/kubectl-1.7
+kubectl_17=/opt/kubectl-1.17
 
 USER_SSL_PATH="/root/yaml/create-user"
 mkdir -p $USER_SSL_PATH
