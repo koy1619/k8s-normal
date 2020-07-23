@@ -360,7 +360,7 @@ spec:
     hosts:
     - k8s-dashboard.e-buychina.com
 
-
+# https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
 
 # kubectl create -f dashboard.yaml 
     
