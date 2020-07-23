@@ -574,4 +574,6 @@ metadata:
 ---
 # Source: calico/templates/kdd-crds.yaml
 
+# curl https://docs.projectcalico.org/manifests/calico-etcd.yaml -O
+
 
