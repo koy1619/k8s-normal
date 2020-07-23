@@ -173,3 +173,6 @@ subjects:
 # Source: metrics-server-v0.3.6/deploy/1.8+/resource-reader.yaml
 
 ---
+
+# https://github.com/kubernetes-sigs/metrics-server/tree/v0.3.6/deploy/1.8%2B
+# https://a5pop.com/container/2019-11-13-metrics-server.html
