@@ -204,3 +204,7 @@ spec:
   - name: metrics
     port: 9153
     protocol: TCP
+
+# https://raw.githubusercontent.com/coredns/deployment/master/kubernetes/coredns.yaml.sed
+# https://a5pop.com/container/2019-11-21-k8s-dns.html
+# https://kubernetes.feisky.xyz/setup/addon-list/kube-dns#coredns
