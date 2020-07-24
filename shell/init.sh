@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 
 function Check_linux_system(){
