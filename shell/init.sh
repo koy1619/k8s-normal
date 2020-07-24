@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
+yum install net-tools -y
 
 function Check_linux_system(){
     linux_version=`cat /etc/redhat-release`
