@@ -2,6 +2,7 @@
 set -e
 
 yum install net-tools -y
+yum install yum-utils -y
 
 function Check_linux_system(){
     linux_version=`cat /etc/redhat-release`
