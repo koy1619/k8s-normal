@@ -284,6 +284,17 @@ spec:
               memory: 50Mi
           args:
             - --configfile=/config/traefik.yaml
+          ports:
+            - name: web
+              containerPort: 80
+              #hostPort: 80
+            - name: websecure
+              containerPort: 443
+              #hostPort: 443
+            - name: admin
+              containerPort: 8080
+              #hostPort: 443
+
           volumeMounts:
             - mountPath: "/config"
               name: "config"
@@ -311,13 +322,6 @@ spec:
 # https://docs.traefik.io/reference/static-configuration/cli/
 # https://docs.traefik.io/routing/entrypoints
 # https://docs.traefik.io/migration/v2/#expose-an-ingress-on-80-and-443
-#          ports:
-#            - name: web
-#              containerPort: 80
-#            - name: websecure
-#              containerPort: 443
-#            - name: admin
-#              containerPort: 8080
 
 #################### traefik-Service ####################
 
