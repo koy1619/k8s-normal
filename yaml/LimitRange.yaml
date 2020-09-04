@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: mem-limit-range
+  namespace: example
+spec:
+  limits:
+  - default:  # default limit
+      memory: 512Mi
+      cpu: 2
+    defaultRequest:  # default request
+      memory: 256Mi
+      cpu: 0.5
+    max:  # max limit
+      memory: 800Mi
+      cpu: 3
+    min:  # min request
+      memory: 100Mi
+      cpu: 0.3
+    maxLimitRequestRatio:  # max value for limit / request
+      memory: 2
+      cpu: 2
+    type: Container # limit type, support: Container / Pod / PersistentVolumeClaim
+---
+
+# https://www.cnblogs.com/tylerzhou/p/11041963.html
+# https://segmentfault.com/a/1190000016758766
