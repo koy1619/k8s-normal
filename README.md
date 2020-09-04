@@ -216,8 +216,9 @@ kubectl apply -f apiserver-to-kubelet-rbac.yml
 # node_install
 
 ```
-master # scp -r /k8s/* root@all_node:/k8s/
+master # scp -r /k8s/kubernetes/*  root@all_node:/k8s/kubernetes/
 
+node # rm -rf /k8s/kubernetes/ssl/kubelet-client*
 node # sh kubelet.sh 10.10.0.2 k8s-node-1 cluster.local
 node # sh proxy.sh k8s-node-1
 node # netstat -ntpl | egrep "kubelet|kube-proxy"

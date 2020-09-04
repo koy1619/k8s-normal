@@ -32,3 +32,4 @@ nohup  java \
 #ThinBackup
 #Pipeline
 #Git Parameter
+#Localization: Chinese (Simplified)
