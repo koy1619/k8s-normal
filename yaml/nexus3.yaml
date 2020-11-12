@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nexus3
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nexus3
+  template:
+    metadata:
+      labels:
+        app: nexus3
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node-1
+      containers:
+      - name: nexus3
+        image: sonatype/nexus3:3.25.0
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: TZ
+            value: Asia/Shanghai
+
+
+        ports:
+          - name: docker-registry
+            containerPort: 5000
+            hostPort: 5000
+          - name: management
+            containerPort: 8081
+            hostPort: 8081
+
+        volumeMounts:
+        - mountPath: /opt/sonatype/sonatype-work
+          name: nexus3-storage
+      volumes:
+      - name: nexus3-storage
+        hostPath:
+          path: /dbdata/nexus3
