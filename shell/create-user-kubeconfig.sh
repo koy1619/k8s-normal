@@ -139,7 +139,7 @@ $kubectl_17 create clusterrolebinding ${USER}-binding --clusterrole=${Authorizat
 #sh create-user-kubeconfig.sh https://10.127.0.16:6443 admin cluster-admin
 
 
-kubectl describe secrets -n default `kubectl  get secrets -n default | grep admin-token | awk '{print $1}'` | grep 'token:' > admin-token
+$kubectl_17 describe secrets -n default `$kubectl_17  get secrets -n default | grep admin-token | awk '{print $1}'` | grep 'token:' > admin-token
 sed -i "s/token:      /    token: /g" admin-token
 cat admin-token >>  $USER_SSL_PATH/${USER}.kubeconfig
 
@@ -149,4 +149,4 @@ echo "Your kubeconfig file is $USER_SSL_PATH/${USER}.kubeconfig"
 
 cp $USER_SSL_PATH/${USER}.kubeconfig  ~/.kube/config
 
-kubectl config view
+$kubectl_17 config view
