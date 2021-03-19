@@ -1,0 +1,227 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: rabbitmq-cluster-config
+  namespace: default
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+data:
+    enabled_plugins: |
+      [rabbitmq_management,rabbitmq_peer_discovery_k8s].
+    rabbitmq.conf: |
+      default_user = admin
+      default_pass = 123!@#
+      ## Cluster formation. See https://www.rabbitmq.com/cluster-formation.html to learn more.
+      cluster_formation.peer_discovery_backend = rabbit_peer_discovery_k8s
+      cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+      ## Should RabbitMQ node name be computed from the pod's hostname or IP address?
+      ## IP addresses are not stable, so using [stable] hostnames is recommended when possible.
+      ## Set to "hostname" to use pod hostnames.
+      ## When this value is changed, so should the variable used to set the RABBITMQ_NODENAME
+      ## environment variable.
+      cluster_formation.k8s.address_type = hostname
+      ## How often should node cleanup checks run?
+      cluster_formation.node_cleanup.interval = 30
+      ## Set to false if automatic removal of unknown/absent nodes
+      ## is desired. This can be dangerous, see
+      ##  * https://www.rabbitmq.com/cluster-formation.html#node-health-checks-and-cleanup
+      ##  * https://groups.google.com/forum/#!msg/rabbitmq-users/wuOfzEywHXo/k8z_HWIkBgAJ
+      cluster_formation.node_cleanup.only_log_warning = true
+      cluster_partition_handling = autoheal
+      ## See https://www.rabbitmq.com/ha.html#master-migration-data-locality
+      queue_master_locator=min-masters
+      ## See https://www.rabbitmq.com/access-control.html#loopback-users
+      loopback_users.guest = false
+      cluster_formation.randomized_startup_delay_range.min = 0
+      cluster_formation.randomized_startup_delay_range.max = 2
+      # default is rabbitmq-cluster's namespace
+      # hostname_suffix
+      cluster_formation.k8s.hostname_suffix = .rabbitmq-cluster.default.svc.cluster.local
+      # memory
+      vm_memory_high_watermark.absolute = 1GB
+      # disk
+      disk_free_limit.absolute = 2GB
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: rabbitmq-cluster
+  name: rabbitmq-cluster
+  namespace: default
+spec:
+  clusterIP: None
+  ports:
+  - name: rmqport
+    port: 5672
+    targetPort: 5672
+  selector:
+    app: rabbitmq-cluster
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: rabbitmq-cluster
+  name: rabbitmq-cluster-manage
+  namespace: default
+spec:
+  ports:
+  - name: http
+    port: 15672
+    protocol: TCP
+    targetPort: 15672
+  selector:
+    app: rabbitmq-cluster
+  type: NodePort
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rabbitmq-cluster
+  namespace: default
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: rabbitmq-cluster
+  namespace: default
+rules:
+- apiGroups: [""]
+  resources: ["endpoints"]
+  verbs: ["get"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1beta1
+metadata:
+  name: rabbitmq-cluster
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: rabbitmq-cluster
+subjects:
+- kind: ServiceAccount
+  name: rabbitmq-cluster
+  namespace: default
+
+---
+
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  labels:
+    app: rabbitmq-cluster
+  name: rabbitmq-cluster
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rabbitmq-cluster
+  serviceName: rabbitmq-cluster
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-cluster
+    spec:
+      containers:
+      - args:
+        - -c
+        - cp -v /etc/rabbitmq/rabbitmq.conf ${RABBITMQ_CONFIG_FILE}; exec docker-entrypoint.sh
+          rabbitmq-server
+        command:
+        - sh
+        env:
+        - name: TZ
+          value: 'Asia/Shanghai'
+        - name: RABBITMQ_ERLANG_COOKIE
+          value: 'SWvCP0Hrqv43NG7GybHC95ntCJKoW8UyNFWnBEWG8TY='
+        - name: K8S_SERVICE_NAME
+          value: rabbitmq-cluster
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: RABBITMQ_USE_LONGNAME
+          value: "true"
+        - name: RABBITMQ_NODENAME
+          value: rabbit@$(POD_NAME).$(K8S_SERVICE_NAME).$(POD_NAMESPACE).svc.cluster.local
+        - name: RABBITMQ_CONFIG_FILE
+          value: /var/lib/rabbitmq/rabbitmq.conf
+        image: rabbitmq:3.8.3-management
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - rabbitmq-diagnostics
+            - status
+          # See https://www.rabbitmq.com/monitoring.html for monitoring frequency recommendations.
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 15
+        name: rabbitmq
+        ports:
+        - containerPort: 15672
+          name: http
+          protocol: TCP
+        - containerPort: 5672
+          name: amqp
+          protocol: TCP
+        readinessProbe:
+          exec:
+            command:
+            - rabbitmq-diagnostics
+            - status
+          initialDelaySeconds: 20
+          periodSeconds: 60
+          timeoutSeconds: 10
+        volumeMounts:
+        - mountPath: /etc/rabbitmq
+          name: config-volume
+          readOnly: false
+        - mountPath: /var/lib/rabbitmq
+          name: rabbitmq-storage
+          readOnly: false
+        - name: timezone
+          mountPath: /etc/localtime
+          readOnly: true
+      serviceAccountName: rabbitmq-cluster
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: config-volume
+        configMap:
+          items:
+          - key: rabbitmq.conf
+            path: rabbitmq.conf
+          - key: enabled_plugins
+            path: enabled_plugins
+          name: rabbitmq-cluster-config
+      - name: timezone
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Shanghai
+  volumeClaimTemplates:
+  - metadata:
+      name: rabbitmq-storage
+    spec:
+      accessModes:
+      - ReadWriteMany
+      storageClassName: "managed-nfs-storage"
+      resources:
+        requests:
+          storage: 2Gi
+
+# https://mp.weixin.qq.com/s/W0XP4UIB2JE2XZJJX_eDDA
