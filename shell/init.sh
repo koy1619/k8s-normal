@@ -24,6 +24,7 @@ function Set_hostname(){
       ;;
       *)
         hostname $HostName
+        #hostnamectl --static set-hostname $HostName
         echo "$HostName" > /etc/hostname
         echo "`ifconfig eth0 | grep inet | awk '{print $2}'` $HostName" >> /etc/hosts
       ;;
