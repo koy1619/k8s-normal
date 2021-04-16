@@ -74,5 +74,6 @@ else
     kubectl set image deployment $APP_NAME $APP_NAME=$docker_registry/$APP_NAME:$VERSION --record
     #kubectl rollout pause  deployment/$APP_NAME
     #kubectl rollout resume deployment/$APP_NAME
+    #https://github.com/koy1619/linux48/blob/main/container/2020-06-09-rolling-update.md
 
 fi
