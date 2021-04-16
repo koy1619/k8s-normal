@@ -2,6 +2,7 @@
 export JAVA_HOME=/usr/local/jdk1.8.0_111
 export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
 export PATH=$JAVA_HOME/bin:$PATH
+export NODE_OPTIONS="--max-old-space-size=4096"
 JENKINS_ROOT=/app/jenkins
 export JENKINS_HOME=$JENKINS_ROOT/jenkins_home
 cd $JENKINS_ROOT
