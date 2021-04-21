@@ -2,18 +2,18 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: rabbitmq-cluster-config
-  namespace: default
+  namespace: uat
   labels:
     addonmanager.kubernetes.io/mode: Reconcile
 data:
     enabled_plugins: |
-      [rabbitmq_management,rabbitmq_peer_discovery_k8s].
+      [rabbitmq_delayed_message_exchange,rabbitmq_management,rabbitmq_peer_discovery_k8s].
     rabbitmq.conf: |
-      default_user = admin
-      default_pass = 123!@#
+      default_user = guest
+      default_pass = guest
       ## Cluster formation. See https://www.rabbitmq.com/cluster-formation.html to learn more.
       cluster_formation.peer_discovery_backend = rabbit_peer_discovery_k8s
-      cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+      cluster_formation.k8s.host = kubernetes.default.svc.default.local
       ## Should RabbitMQ node name be computed from the pod's hostname or IP address?
       ## IP addresses are not stable, so using [stable] hostnames is recommended when possible.
       ## Set to "hostname" to use pod hostnames.
@@ -36,7 +36,7 @@ data:
       cluster_formation.randomized_startup_delay_range.max = 2
       # default is rabbitmq-cluster's namespace
       # hostname_suffix
-      cluster_formation.k8s.hostname_suffix = .rabbitmq-cluster.default.svc.cluster.local
+      cluster_formation.k8s.hostname_suffix = .rabbitmq-headless.uat.svc.default.local
       # memory
       vm_memory_high_watermark.absolute = 1GB
       # disk
@@ -49,8 +49,8 @@ apiVersion: v1
 metadata:
   labels:
     app: rabbitmq-cluster
-  name: rabbitmq-cluster
-  namespace: default
+  name: rabbitmq-headless
+  namespace: uat
 spec:
   clusterIP: None
   ports:
@@ -66,8 +66,8 @@ apiVersion: v1
 metadata:
   labels:
     app: rabbitmq-cluster
-  name: rabbitmq-cluster-manage
-  namespace: default
+  name: rabbitmq-management-headless
+  namespace: uat
 spec:
   ports:
   - name: http
@@ -76,21 +76,48 @@ spec:
     targetPort: 15672
   selector:
     app: rabbitmq-cluster
-  type: NodePort
+#  type: NodePort
 
 ---
 
+# ------------------- App Ingress ------------------- #
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: rabbitmq-management-ingress
+  namespace: uat
+  annotations:
+    # 代理发送超时
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    # 代理读取超时
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    # 代理连接超时
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    # 基于客户端出口ip哈希
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$http_x_forwarded_for"
+spec:
+  rules:
+  - host: uat-paas-mq.e-test.com.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: rabbitmq-management-headless
+          servicePort: 15672
+  tls:
+    - secretName: e-test-com-cn-secret
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: rabbitmq-cluster
-  namespace: default
+  namespace: uat
 ---
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: rabbitmq-cluster
-  namespace: default
+  namespace: uat
 rules:
 - apiGroups: [""]
   resources: ["endpoints"]
@@ -100,7 +127,7 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: rabbitmq-cluster
-  namespace: default
+  namespace: uat
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -108,7 +135,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: rabbitmq-cluster
-  namespace: default
+  namespace: uat
 
 ---
 
@@ -118,13 +145,13 @@ metadata:
   labels:
     app: rabbitmq-cluster
   name: rabbitmq-cluster
-  namespace: default
+  namespace: uat
 spec:
   replicas: 3
   selector:
     matchLabels:
       app: rabbitmq-cluster
-  serviceName: rabbitmq-cluster
+  serviceName: rabbitmq-headless
   template:
     metadata:
       labels:
@@ -143,7 +170,7 @@ spec:
         - name: RABBITMQ_ERLANG_COOKIE
           value: 'SWvCP0Hrqv43NG7GybHC95ntCJKoW8UyNFWnBEWG8TY='
         - name: K8S_SERVICE_NAME
-          value: rabbitmq-cluster
+          value: rabbitmq-headless
         - name: POD_IP
           valueFrom:
             fieldRef:
@@ -159,10 +186,10 @@ spec:
         - name: RABBITMQ_USE_LONGNAME
           value: "true"
         - name: RABBITMQ_NODENAME
-          value: rabbit@$(POD_NAME).$(K8S_SERVICE_NAME).$(POD_NAMESPACE).svc.cluster.local
+          value: rabbit@$(POD_NAME).$(K8S_SERVICE_NAME).$(POD_NAMESPACE).svc.default.local
         - name: RABBITMQ_CONFIG_FILE
           value: /var/lib/rabbitmq/rabbitmq.conf
-        image: rabbitmq:3.8.3-management
+        image: system386/rabbitmq:3.8.9-management
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
@@ -219,9 +246,7 @@ spec:
     spec:
       accessModes:
       - ReadWriteMany
-      storageClassName: "managed-nfs-storage"
+      storageClassName: "course-nfs-storage"
       resources:
         requests:
           storage: 2Gi
-
-# https://mp.weixin.qq.com/s/W0XP4UIB2JE2XZJJX_eDDA
