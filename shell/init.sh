@@ -149,6 +149,11 @@ function Install_docker(){
 #    sudo yum install -y yum-utils  device-mapper-persistent-data  lvm2
 #    sudo yum-config-manager  --add-repo   https://download.docker.com/linux/centos/docker-ce.repo
 #    sudo yum install docker-ce docker-ce-cli containerd.io
+#
+#yum install -y https://download.docker.com/linux/fedora/30/x86_64/stable/Packages/containerd.io-1.2.13-3.2.fc30.x86_64.rpm
+#yum install -y https://download.docker.com/linux/fedora/30/x86_64/stable/Packages/docker-ce-19.03.6-3.fc30.x86_64.rpm
+#yum install -y https://download.docker.com/linux/fedora/30/x86_64/stable/Packages/docker-ce-cli-19.03.6-3.fc30.x86_64.rpm
+#
 #    mkdir -p /etc/docker
 #tee /etc/docker/daemon.json <<EOF
 #{
