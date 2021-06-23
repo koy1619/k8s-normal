@@ -145,10 +145,22 @@ function Install_docker(){
     yum -y install docker-ce-19.03.6 docker-ce-cli-19.03.6
 
 ##centos8 Install_docker####
-    sudo yum install https://download.docker.com/linux/fedora/30/x86_64/stable/Packages/containerd.io-1.2.13-3.2.fc30.x86_64.rpm
-    sudo yum install -y yum-utils  device-mapper-persistent-data  lvm2
-    sudo yum-config-manager  --add-repo   https://download.docker.com/linux/centos/docker-ce.repo
-    sudo yum install docker-ce docker-ce-cli containerd.io
+#    sudo yum install https://download.docker.com/linux/fedora/30/x86_64/stable/Packages/containerd.io-1.2.13-3.2.fc30.x86_64.rpm
+#    sudo yum install -y yum-utils  device-mapper-persistent-data  lvm2
+#    sudo yum-config-manager  --add-repo   https://download.docker.com/linux/centos/docker-ce.repo
+#    sudo yum install docker-ce docker-ce-cli containerd.io
+#    mkdir -p /etc/docker
+#tee /etc/docker/daemon.json <<EOF
+#{
+#  "registry-mirrors": ["https://docker.mirrors.ustc.edu.cn"],
+#  "registry-mirrors": ["https://mirror.ccs.tencentyun.com"],
+#  "registry-mirrors": ["https://registry.docker-cn.com"],
+#  "registry-mirrors": ["http://hub-mirror.c.163.com"] 
+#}
+#EOF
+#systemctl start docker & systemctl enable docker
+#docker version
+
 ######
 
     # 设置 iptables file表中 FORWARD 默认链规则为 ACCEPT
