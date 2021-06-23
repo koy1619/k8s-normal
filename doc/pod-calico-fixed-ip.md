@@ -6,7 +6,7 @@
 
 >* ``cni.projectcalico.org/ipv4pools``
 
-#单个pod固定IP
+# 单个pod固定IP
 
 利用注解``cni.projectcalico.org/ipAddrs``
 

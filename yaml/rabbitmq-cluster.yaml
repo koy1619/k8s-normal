@@ -189,6 +189,7 @@ spec:
           value: rabbit@$(POD_NAME).$(K8S_SERVICE_NAME).$(POD_NAMESPACE).svc.default.local
         - name: RABBITMQ_CONFIG_FILE
           value: /var/lib/rabbitmq/rabbitmq.conf
+        #image: rabbitmq:3.8.9-management
         image: system386/rabbitmq:3.8.9-management
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -250,3 +251,4 @@ spec:
       resources:
         requests:
           storage: 2Gi
+#https://mp.weixin.qq.com/s/W0XP4UIB2JE2XZJJX_eDDA

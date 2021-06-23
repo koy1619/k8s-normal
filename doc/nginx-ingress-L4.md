@@ -112,3 +112,6 @@ listen nginx_ingress_redis
 by
 
 https://blog.51cto.com/fengwan/2544519
+
+
+其实还不如`NodePort`暴露来的简单实在

@@ -53,8 +53,25 @@ spec:
               topologyKey: "kubernetes.io/hostname"
       containers:
         - name: k8snacos
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           image: nacos/nacos-server:1.3.0
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 8848
+            timeoutSeconds: 2
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 2
+            tcpSocket:
+              port: 8848
+            timeoutSeconds: 2
+
           resources:
             requests:
               memory: "2Gi"
@@ -107,25 +124,53 @@ spec:
 
 ---
 # ------------------- App Service ------------------- #
-apiVersion: v1
-kind: Service
-metadata:
-  name: nacos-service
-  namespace: default
-#  annotations:
-#    traefik.ingress.kubernetes.io/affinity: "true"
-#    traefik.ingress.kubernetes.io/session-cookie-name: "xxx"
-#    traefik.ingress.kubernetes.io/load-balancer-method: drr
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: nacos-service
+#  namespace: default
+##  annotations:
+##    traefik.ingress.kubernetes.io/affinity: "true"
+##    traefik.ingress.kubernetes.io/session-cookie-name: "xxx"
+##    traefik.ingress.kubernetes.io/load-balancer-method: drr
+#
+#spec:
+#  selector:
+#    app: nacos
+##  sessionAffinity: ClientIP
+##  sessionAffinityConfig:
+##    clientIP:
+##      timeoutSeconds: 10800
+#  type: NodePort
+#  ports:
+#    - port: 8848
+#      targetPort: 8848
+#      nodePort: 30446
 
+
+# ------------------- App Ingress ------------------- #
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nacos-ingress
+  namespace: default
+  annotations:
+    # 代理发送超时
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    # 代理读取超时
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    # 代理连接超时
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    # 基于客户端出口ip哈希
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$http_x_forwarded_for"
 spec:
-  selector:
-    app: nacos
-#  sessionAffinity: ClientIP
-#  sessionAffinityConfig:
-#    clientIP:
-#      timeoutSeconds: 10800
-  type: NodePort
-  ports:
-    - port: 8848
-      targetPort: 8848
-      nodePort: 30446
+  rules:
+  - host: nacos.test.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nacos-headless
+          servicePort: 8848
+  tls:
+    - secretName: test-com-secret

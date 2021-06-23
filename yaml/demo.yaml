@@ -90,6 +90,12 @@ metadata:
   name: nginx-demo-web
   namespace: default
   annotations:
+    #ingress使用那种软件 
+    kubernetes.io/ingress.class: nginx
+    #配置websocket需要的配置   
+    #nginx.ingress.kubernetes.io/configuration-snippet: |
+    #   proxy_set_header Upgrade "websocket";
+    #   proxy_set_header Connection "Upgrade";
     # 代理发送超时
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     # 代理读取超时

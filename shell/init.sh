@@ -143,6 +143,13 @@ function Install_docker(){
     yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
     yum makecache fast
     yum -y install docker-ce-19.03.6 docker-ce-cli-19.03.6
+
+##centos8 Install_docker####
+    sudo yum install -y yum-utils  device-mapper-persistent-data  lvm2
+    sudo yum-config-manager  --add-repo   https://download.docker.com/linux/centos/docker-ce.repo
+    sudo yum install docker-ce docker-ce-cli containerd.io
+######
+
     # 设置 iptables file表中 FORWARD 默认链规则为 ACCEPT
     sed  -i '/ExecStart=/i ExecStartPost=\/sbin\/iptables -P FORWARD ACCEPT' /usr/lib/systemd/system/docker.service
     systemctl enable docker.service

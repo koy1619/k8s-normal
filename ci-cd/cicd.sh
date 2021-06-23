@@ -11,7 +11,9 @@ git clone git@github.com:paas/$APP_NAME
 cd  ./$APP_NAME
 sed -i "s/server-addr: paas-nacos-config:8848/server-addr: nacos-headless:8848/g" core/src/main/resources/application.yml
 sed -i "s/level value=\"debug\"/level value=\"info\"/g" core/src/main/resources/logback-spring.xml
-mvn install
+#mvn install
+mvn -T 2 clean install -Dmaven.profile -Dmaven.test.skip=true -Dpmd.skip=true -Dcheckstyle.skip=true -Dsonar.skip=true -e -U -q
+
 
 
 
