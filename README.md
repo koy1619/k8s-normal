@@ -281,7 +281,7 @@ NAME            TYPE       CLUSTER-IP     EXTERNAL-IP   PORT(S)                 
 ingress-nginx   NodePort   10.10.32.187   <none>        80:32080/TCP,443:32443/TCP   6m31s
 
 
-# haproxy配置
+# LB haproxy配置
 listen nginx_gress_http
      mode tcp
      balance roundrobin
@@ -301,6 +301,39 @@ listen nginx_gress_https
      timeout connect 30s
      server k8s_node_1 k8s-node-1-ip:32443 weight 1 check inter 2000 rise 5 fall 10 send-proxy
      server k8s_node_2 k8s-node-2-ip:32443 weight 1 check inter 2000 rise 5 fall 10 send-proxy
+
+
+# LB nginx 配置
+[root@paas-log-75 tcp.d]$cat /usr/local/nginx/conf/tcp.d/k8s-nginx-ingress.conf 
+upstream ingress-http {
+    server k8s-node-1-ip:32080 max_fails=3 fail_timeout=30s;
+    server k8s-node-2-ip:32080 max_fails=3 fail_timeout=30s;
+
+}
+
+server {
+        listen 80;
+        proxy_connect_timeout 1s;
+        proxy_timeout 3s;
+        proxy_pass ingress-http;
+        proxy_protocol on;
+}
+
+
+
+upstream ingress-https {
+    server k8s-node-1-ip:32443 max_fails=3 fail_timeout=30s;
+    server k8s-node-2-ip:32443 max_fails=3 fail_timeout=30s;
+}
+
+server {
+        listen 443;
+        proxy_connect_timeout 1s;
+        proxy_timeout 3s;
+        proxy_pass ingress-https;
+        proxy_protocol on;
+}
+[root@paas-log-75 tcp.d]$
 
 
 # demo 测试
