@@ -235,6 +235,15 @@ k8s-node-1   NotReady   <none>   20s   v1.18.2
 
 # calico网络组件安装
 # 需修改 etcd-key etcd-cert etcd-ca etcd_endpoints KUBERNETES_SERVICE_HOST 配置项
+# 如果是多网卡还需配置 IP_AUTODETECTION_METHOD 配置项
+
+ETCD_KEY=`cat /k8s/kubernetes/ssl/server-key.pem | base64 -w 0`
+ETCD_CERT=`cat /k8s/kubernetes/ssl/server.pem | base64 -w 0`
+ETCD_CA=`cat /k8s/kubernetes/ssl/ca.pem | base64 -w 0`
+sed -i "s@etcd-key: null@etcd-key: ${ETCD_KEY}@g; s@etcd-cert: null@etcd-cert: ${ETCD_CERT}@g; s@etcd-ca: null@etcd-ca: ${ETCD_CA}@g" calico-etcd.yaml
+sed -i 's#etcd_endpoints: "http://<ETCD_IP>:<ETCD_PORT>"#etcd_endpoints: "https://10.127.0.16:2379,https://10.127.0.17:2379,https://10.127.0.18:2379"#g' calico-etcd.yaml
+sed -i 's#$kube-apiserver-ip#10.127.0.16#g' calico-etcd.yaml
+
 kubectl  create -f calico-etcd.yaml
 
 kubectl  get pods -n kube-system  | grep calico
