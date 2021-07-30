@@ -1,0 +1,122 @@
+# ------------------- App  ------------------- #
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nacos-server
+  namespace: haagendazstest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nacos-server
+  serviceName: nacos-headless
+  template:
+    metadata:
+      labels:
+        app: nacos-server
+    spec:
+
+      nodeSelector:
+        node: "haagendazstest"
+      tolerations:
+      - key: "node.kubernetes.io/unschedulable"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+      containers:
+        - name: nacos-server
+          image: nacos/nacos-server:2.0.1
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MODE
+              value: "standalone"
+
+          # 存活检测
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1 
+            tcpSocket:
+              port: 8848
+            timeoutSeconds: 1
+          # 就绪检测
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 8848
+            timeoutSeconds: 1
+
+          volumeMounts:
+          - name: timezone
+            mountPath: /etc/localtime
+            readOnly: true
+          - mountPath: /home/nacos/data
+            name: nacos-storage
+      volumes:
+      - name: timezone
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Shanghai
+  volumeClaimTemplates:
+  - metadata:
+      name: nacos-storage
+    spec:
+      accessModes:
+      - ReadWriteMany
+      storageClassName: "course-nfs-storage"
+      resources:
+        requests:
+          storage: 5Gi
+---
+# ------------------- App Service ------------------- #
+apiVersion: v1
+kind: Service
+metadata:
+  name: nacos-headless
+  namespace: haagendazstest
+  labels:
+    app: nacos-headless
+spec:
+  ports:
+    - port: 8848
+      name: server
+      targetPort: 8848
+  selector:
+    app: nacos-server
+
+---
+# ------------------- App Ingress ------------------- #
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nacos-web
+  namespace: haagendazstest
+  annotations:
+    #ingress使用那种软件 
+    kubernetes.io/ingress.class: nginx
+    #配置websocket需要的配置   
+    #nginx.ingress.kubernetes.io/configuration-snippet: |
+    #   proxy_set_header Upgrade "websocket";
+    #   proxy_set_header Connection "Upgrade";
+    # 代理发送超时
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    # 代理读取超时
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    # 代理连接超时
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    # 基于客户端出口ip哈希
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$http_x_forwarded_for"
+spec:
+  rules:
+  - host: haagendazstest-nacos.e.com.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nacos-headless
+          servicePort: 8848
+  tls:
+    - secretName: e-com-cn-secret

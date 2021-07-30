@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: redis
+  namespace: haagendazstest
+  annotations:
+    security.alpha.kubernetes.io/unsafe-sysctls: net.core.somaxconn=65535
+spec:
+  serviceName: redis-headless
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: colovu/redis
+        imagePullPolicy: IfNotPresent
+        resources:
+            limits:
+              cpu: 400m
+              memory: 400Mi
+            requests:
+              cpu: 400m
+              memory: 400Mi
+        env:
+          - name: TZ
+            value: Asia/Shanghai
+          - name: REDIS_PASSWORD
+            value: "dc552eeb2033caf825b1db97d754fc9a"
+          - name: REDIS_AOF_ENABLED
+            value: "no"
+
+      nodeSelector:
+        node: "haagendazstest"
+      tolerations:
+      - key: "node.kubernetes.io/unschedulable"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+  name: redis-headless
+  namespace: haagendazstest
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+  selector:
+    app: redis
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+  name: redis-service
+  namespace: haagendazstest
+spec:
+  ports:
+  - port: 6379
+    targetPort: 6379
+    nodePort: 30020
+  selector:
+    app: redis
+  type: NodePort

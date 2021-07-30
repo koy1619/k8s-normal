@@ -1,0 +1,115 @@
+# ------------------- App  ------------------- #
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rabbit-mq-server
+  namespace: haagendazstest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbit-mq-server
+  serviceName: rabbitmq-headless
+  template:
+    metadata:
+      labels:
+        app: rabbit-mq-server
+    spec:
+      containers:
+        - name: rabbit-mq-server
+          image: 'system386/rabbitmq:3.8.9-management'
+          imagePullPolicy: IfNotPresent
+          # 存活检测
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1 
+            tcpSocket:
+              port: 5672
+            timeoutSeconds: 1
+          # 就绪检测
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            tcpSocket:
+              port: 5672
+            timeoutSeconds: 1
+
+      nodeSelector:
+        node: "haagendazstest"
+      tolerations:
+      - key: "node.kubernetes.io/unschedulable"
+        operator: "Exists"
+        effect: "NoSchedule"
+
+---
+# ------------------- App Service ------------------- #
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: rabbit-mq-server
+  name: rabbitmq-headless
+  namespace: haagendazstest
+spec:
+  clusterIP: None
+  ports:
+  - name: rmqport
+    port: 5672
+    targetPort: 5672
+  selector:
+    app: rabbit-mq-server
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: rabbit-mq-server
+  name: rabbitmq-management-headless
+  namespace: haagendazstest
+spec:
+  ports:
+  - name: http
+    port: 15672
+    protocol: TCP
+    targetPort: 15672
+  selector:
+    app: rabbit-mq-server
+#  type: NodePort
+---
+# ------------------- App Ingress ------------------- #
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: rabbit-mq-web
+  namespace: haagendazstest
+  annotations:
+    #ingress使用那种软件 
+    kubernetes.io/ingress.class: nginx
+    #配置websocket需要的配置   
+    #nginx.ingress.kubernetes.io/configuration-snippet: |
+    #   proxy_set_header Upgrade "websocket";
+    #   proxy_set_header Connection "Upgrade";
+    # 代理发送超时
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    # 代理读取超时
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    # 代理连接超时
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
+    # 基于客户端出口ip哈希
+    nginx.ingress.kubernetes.io/upstream-hash-by: "$http_x_forwarded_for"
+spec:
+  rules:
+  - host: haagendazstest-mq.e.com.cn
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: rabbitmq-management-headless
+          servicePort: 15672
+  tls:
+    - secretName: e-com-cn-secret
