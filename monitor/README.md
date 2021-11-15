@@ -10,10 +10,19 @@ cat > /etc/exports <<EOF
 /data/nfs_data  *(rw,sync,no_root_squash)
 EOF
 
+exportfs -ra
+exportfs -v
+
 systemctl enable rpcbind.service
 systemctl enable nfs.service
 systemctl start rpcbind.service
 systemctl start nfs.service
+
+##centos8##
+#dnf install nfs-utils
+#systemctl enable --now nfs-server
+#systemctl start nfs-server
+##########
 
 kubectl create -f 1-nfs-storageclass/
 
