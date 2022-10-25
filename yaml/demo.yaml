@@ -104,6 +104,15 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-connect-timeout: "3600"
     # 基于客户端出口ip哈希
     nginx.ingress.kubernetes.io/upstream-hash-by: "$http_x_forwarded_for"
+    # 用于插入 location 块代码段
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      if ($request_method !~ ^(GET|HEAD|POST)$){
+         return 403;
+      }
 spec:
   rules:
   - host: test-nginx-demo.e-buychina.com
