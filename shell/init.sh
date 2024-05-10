@@ -173,7 +173,7 @@ function Install_docker(){
     systemctl enable docker.service
     systemctl start docker.service
     systemctl stop docker.service
-    echo '{"registry-mirrors": ["https://4xr1qpsp.mirror.aliyuncs.com"], "log-opts": {"max-size":"500m", "max-file":"3"},"storage-driver": "devicemapper"}' > /etc/docker/daemon.json
+    echo '{"registry-mirrors": ["https://4xr1qpsp.mirror.aliyuncs.com"], "log-opts": {"max-size":"500m", "max-file":"3"},"storage-driver": "overlay2"}' > /etc/docker/daemon.json
     systemctl daemon-reload
     systemctl start docker
     sleep 10
