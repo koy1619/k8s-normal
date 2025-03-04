@@ -173,7 +173,41 @@ function Install_docker(){
     systemctl enable docker.service
     systemctl start docker.service
     systemctl stop docker.service
-    echo '{"registry-mirrors": ["https://4xr1qpsp.mirror.aliyuncs.com"], "log-opts": {"max-size":"500m", "max-file":"3"},"storage-driver": "overlay2"}' > /etc/docker/daemon.json
+
+rm -rf /etc/docker/daemon.json
+
+cat > /etc/docker/daemon.json <<EOF
+{
+  "builder": {
+    "gc": {
+      "defaultKeepStorage": "20GB",
+      "enabled": true
+    }
+  },
+  "dns": [
+    "8.8.8.8",
+    "8.8.4.4"
+  ],
+  "experimental": false,
+  "features": {
+    "buildkit": true
+  },
+  "max-concurrent-downloads": 3,
+  "max-download-attempts": 5,
+  "registry-mirrors": [
+    "https://docker.1ms.run",
+    "https://docker.imgdb.de",
+    "https://docker.wanpeng.life",
+    "https://docker.1panel.live",
+    "https://hk11.606166.xyz",
+    "https://docker.1panel.live",
+    "https://hub.rat.dev"
+  ],
+  "shutdown-timeout": 1200
+}
+
+EOF
+
     systemctl daemon-reload
     systemctl start docker
     sleep 10
