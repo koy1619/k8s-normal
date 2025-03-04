@@ -194,7 +194,7 @@ cat > /etc/docker/daemon.json <<EOF
   },
   "max-concurrent-downloads": 3,
   "max-download-attempts": 5,
-  "storage-driver": "overlay2"
+  "storage-driver": "overlay2",
   "registry-mirrors": [
     "https://docker.1ms.run",
     "https://docker.imgdb.de",
